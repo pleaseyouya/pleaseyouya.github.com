@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[Pleaseyouya's Blog]]></title>
+  <subtitle><![CDATA[Step by step]]></subtitle>
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://pleaseyouya.com/"/>
+  <updated>2015-12-25T01:11:02.000Z</updated>
+  <id>http://pleaseyouya.com/</id>
+  
+  <author>
+    <name><![CDATA[pleaseyouya]]></name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Android Listview item confused with image showing]]></title>
+    <link href="http://pleaseyouya.com/2015/12/12/Android-Listview-item-confused-with-image-showing/"/>
+    <id>http://pleaseyouya.com/2015/12/12/Android-Listview-item-confused-with-image-showing/</id>
+    <published>2015-12-12T06:17:08.000Z</published>
+    <updated>2015-12-25T01:11:02.000Z</updated>
+    <content type="html"><![CDATA[<p><strong>Android</strong> Listview出现item图片错乱显示的问题</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">new</span> Android Listview出现<span class="keyword">item</span>图片错乱显示的问题</span><br></pre></td></tr></table></figure>
+<p>这仅仅是一篇测试Markdown语法的文章。 </p>
+<blockquote>
+<p>Every interaction is both precious and an opportunity to delight.</p>
+</blockquote>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CommonAdapter</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCount</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">getView</span>(<span class="params">View convertView, ViewGroup parent, <span class="keyword">int</span> pos</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>$head$</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><strong>Android</strong> Listview出现item图片错乱显示的问题</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span cl]]>
+    </summary>
+    
+      <category term="Android" scheme="http://pleaseyouya.com/tags/Android/"/>
+    
+      <category term="android" scheme="http://pleaseyouya.com/categories/android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[test hello world]]></title>
+    <link href="http://pleaseyouya.com/2015/12/12/test-hello-world/"/>
+    <id>http://pleaseyouya.com/2015/12/12/test-hello-world/</id>
+    <published>2015-12-12T04:48:27.000Z</published>
+    <updated>2015-12-12T05:10:15.000Z</updated>
+    <content type="html"></content>
+    <summary type="html">
+    
+    </summary>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Hello World]]></title>
+    <link href="http://pleaseyouya.com/2015/12/12/hello-world/"/>
+    <id>http://pleaseyouya.com/2015/12/12/hello-world/</id>
+    <published>2015-12-12T04:19:02.000Z</published>
+    <updated>2015-12-12T04:19:02.000Z</updated>
+    <content type="html"><![CDATA[<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick_Start"><a href="#Quick_Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create_a_new_post"><a href="#Create_a_new_post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run_server"><a href="#Run_server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate_static_files"><a href="#Generate_static_files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy_to_remote_sites"><a href="#Deploy_to_remote_sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io]]>
+    </summary>
+    
+  </entry>
+  
+</feed>
