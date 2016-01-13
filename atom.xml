@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-12T16:58:09.000Z</updated>
+  <updated>2016-01-13T16:32:46.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -13,6 +13,25 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[浅谈listview的divider]]></title>
+    <link href="http://pleaseyouya.com/2016/01/14/android-headerDividersEnabled%E5%92%8Candroid-footerDividersEnabled/"/>
+    <id>http://pleaseyouya.com/2016/01/14/android-headerDividersEnabled和android-footerDividersEnabled/</id>
+    <published>2016-01-13T16:21:47.000Z</published>
+    <updated>2016-01-13T16:32:46.000Z</updated>
+    <content type="html"><![CDATA[<p>在android中，listview可以添加header和footer。<br>不管是header还是footer，和listview的item之间默认都有divider。<br>如果添加header时不希望和第一个item有divider，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">android:headerDividersEnabled </span>= <span class="string">"false"</span></span><br></pre></td></tr></table></figure></p>
+<p>如果添加footer时不希望和最后一个item有divider，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">android:footerDividersEnabled </span>= <span class="string">"false"</span></span><br></pre></td></tr></table></figure></p>
+<p>listview的第一个item的上边和最后一个item的下边默认都没有divider，而item之间都默认有。<br>如果想去掉所有的divider，包括header和footer的，<br><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">android:</span>divider=<span class="string">"@null"</span></span><br></pre></td></tr></table></figure></p>
+<p>此时，headerDividersEnabled和footerDividersEnabled怎么设置都没效果了。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>在android中，listview可以添加header和footer。<br>不管是header还是footer，和listview的item之间默认都有divider。<br>如果添加header时不希望和第一个item有divider，<br><figure clas]]>
+    </summary>
+    
+      <category term="android" scheme="http://pleaseyouya.com/tags/android/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[添加一个本地项目到github]]></title>
