@@ -62,6 +62,51 @@
   <header>
     
       <div class="icon"></div>
+      <a href="/2016/01/16/浅谈android-sharedpreferences-mode/">
+  <time datetime="2016-01-16T06:25:18.000Z">
+    2016-01-16
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/01/16/浅谈android-sharedpreferences-mode/">浅谈android sharedpreferences mode</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>目标：实现两个进程间通信，通过sharedPreferences。</p>
+<ol>
+<li><h3 id="u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u5B58_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u4E2D_u5374_u53D6_u4E0D_u5230_u6570_u636E_uFF1F"><a href="#u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u5B58_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u4E2D_u5374_u53D6_u4E0D_u5230_u6570_u636E_uFF1F" class="headerlink" title="问题：在进程A中存数据，但是在进程B中却取不到数据？"></a>问题：在进程A中存数据，但是在进程B中却取不到数据？</h3><p><em>发现问题</em>：进程A在getSharedPreferences的模式是<em>MODE_PRIVATE</em>，此时进程B肯定读不到。<br><em>正确的做法</em>：进程A在getSharedPreferences的模式是MODE_WORLD_READABLE</p>
+<figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">getSharedPreferences(<span class="string">"pref"</span>, <span class="type">Context</span>.<span class="type">MODE_WORLD_READABLE</span>).edit<span class="literal">()</span></span><br><span class="line">                        .putString</span><br><span class="line">                        (<span class="string">"key"</span>,</span><br><span class="line">                        <span class="string">"world readable"</span>).commit<span class="literal">()</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u4FEE_u6539sharedPreference_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u8BFB_u5230_u7684_u59CB_u7EC8_u662F_u7B2C_u4E00_u6B21_u7684_u6570_u636E_uFF1F"><a href="#u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u4FEE_u6539sharedPreference_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u8BFB_u5230_u7684_u59CB_u7EC8_u662F_u7B2C_u4E00_u6B21_u7684_u6570_u636E_uFF1F" class="headerlink" title="问题：在进程A中修改sharedPreference数据，但是在进程B读到的始终是第一次的数据？"></a>问题：在进程A中修改sharedPreference数据，但是在进程B读到的始终是第一次的数据？</h3><p><em>发现问题</em>：进程B在getSharedPreferences的模式不是<em>MODE_MULTI_PROCESS</em>，preference并没有从文件中reload。<br><em>正确的做法</em>：进程B在getSharedPreferences的模式是<em>MODE_MULTI_PROCESS</em>，每次获取都会reload。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">String </span>s = getSharedPreferences(<span class="string">"pref"</span>, MODE_MULTI_PROCESS).getString(<span class="string">"key"</span>,</span><br><span class="line">                <span class="string">"default"</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>具体的内部逻辑可参考ContextImpl源码，后续会给出原因分析。</p>
+<p>性能考虑：<br>commit()和apply()每次都是将所有的设置信息写入文件，比如putString(“key”, “data”).commit()， 并非只将key-data写入，而是所有的设置重写一遍。所以，不要每次putXXX就commit一次。<br>所以，<br><figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sharedpreferences.edit<span class="literal">()</span>.putString(<span class="string">"key1"</span>, <span class="string">"data1"</span>);</span><br><span class="line">sharedpreferences.edit<span class="literal">()</span>.putString(<span class="string">"key2"</span>, <span class="string">"data2"</span>);</span><br><span class="line">sharedpreferences.edit<span class="literal">()</span>.commit<span class="literal">()</span>;</span><br></pre></td></tr></table></figure></p>
+<p>性能比如下好：<br><figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sharedpreferences.edit<span class="literal">()</span>.putString(<span class="string">"key1"</span>, <span class="string">"data1"</span>).commit<span class="literal">()</span>;</span><br><span class="line">sharedpreferences.edit<span class="literal">()</span>.putString(<span class="string">"key2"</span>, <span class="string">"data2"</span>).commit<span class="literal">()</span>;</span><br></pre></td></tr></table></figure></p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
       <a href="/2016/01/14/android-headerDividersEnabled和android-footerDividersEnabled/">
   <time datetime="2016-01-13T16:21:47.000Z">
     2016-01-14
