@@ -62,6 +62,41 @@
   <header>
     
       <div class="icon"></div>
+      <a href="/2016/01/16/listview常见使用场景/">
+  <time datetime="2016-01-16T09:59:49.000Z">
+    2016-01-16
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/01/16/listview常见使用场景/">listview常见使用场景</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>场景1、滑动到底部或者顶部时，去掉底部或顶部产生的阴影。<br><figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//去掉滑动到底部时或者顶部时产生的阴影divider</span></span><br><span class="line">listView.setOverScrollMode<span class="comment">(View.OVER_SCROLL_NEVER)</span>;</span><br></pre></td></tr></table></figure></p>
+<p>场景2、让listview滑动到底部<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">listView.post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        listView.smoothScrollToPosition(listView.getCount()-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
       <a href="/2016/01/16/浅谈android-sharedpreferences-mode/">
   <time datetime="2016-01-16T06:25:18.000Z">
     2016-01-16
