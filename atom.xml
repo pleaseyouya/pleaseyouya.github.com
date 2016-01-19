@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-16T13:41:37.000Z</updated>
+  <updated>2016-01-19T17:01:09.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -13,6 +13,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[ontouch和onTouchEvent的传递过程]]></title>
+    <link href="http://pleaseyouya.com/2016/01/20/ontouch%E5%92%8ConTouchEvent%E7%9A%84%E4%BC%A0%E9%80%92%E8%BF%87%E7%A8%8B/"/>
+    <id>http://pleaseyouya.com/2016/01/20/ontouch和onTouchEvent的传递过程/</id>
+    <published>2016-01-19T16:36:25.000Z</published>
+    <updated>2016-01-19T17:01:09.000Z</updated>
+    <content type="html"><![CDATA[<p>ontouch和onTouchEvent的传递过程是自上而下的。<br>这里的自上而下，是指从父view开始，接着传递给子view。其中传递过程牵涉到三个重要的方法，分别是onInterceptTouchEvent，onTouch，onTouchEvent。</p>
+<p>只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent，但textView则没有改方法。</p>
+<p>对每一个view来说，如果它可以执行onTouch或者onTouchEvent，那么，优先执行onTouch。</p>
+<p>为了说明传递的过程，举个简单的例子。A是父view，B是A的子view，而C是B的子view。</p>
+<blockquote>
+<p>A contains B, B contains C</p>
+</blockquote>
+<p>当touch C，onTouch和onTouchEvent的传递过程是：</p>
+<blockquote>
+<p>A：onInterceptTouchEvent-&gt;false, 传递给B<br>B：onInterceptTouchEvent-&gt;false, 传递给C<br>C：不是view group，直接执行onTouch-&gt;false，继续执行onTouchEvent-&gt;false，传递给B<br>B：执行onTouch-&gt;false，继续执行onTouchEvent-&gt;false,传递给A<br>A：执行onTouch-&gt;false，继续执行onTouchEvent-&gt;false，结束。</p>
+</blockquote>
+<p>onInterceptTouchEvent可以看成是向下传递的拦截器，如果返回true，则不传递给子view了，将由当前view直接执行onTouch。<br>而onTouch和onTouchEvent可以看成是向上传递的拦截器，如果返回true,则不传递给父view了，将结束本次传递。</p>
+<blockquote>
+<p>如果onTouch或onTouchEvent返回true，则后面的事件将不会调用该view的onInterceptTouchEvent，传递到该view时，直接传递给onTouch或onTouchEvent执行。</p>
+</blockquote>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>ontouch和onTouchEvent的传递过程是自上而下的。<br>这里的自上而下，是指从父view开始，接着传递给子view。其中传递过程牵涉到三个重要的方法，分别是onInterceptTouchEvent，onTouch，onTouchEvent。</p>
+<p>]]>
+    </summary>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[listview setDivider无效]]></title>
