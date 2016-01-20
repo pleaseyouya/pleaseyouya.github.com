@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-19T17:01:09.000Z</updated>
+  <updated>2016-01-20T16:28:39.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -13,6 +13,24 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[ScrollView解决超出屏幕高度的layou]]></title>
+    <link href="http://pleaseyouya.com/2016/01/21/ScrollView%E8%A7%A3%E5%86%B3%E8%B6%85%E5%87%BA%E5%B1%8F%E5%B9%95%E9%AB%98%E5%BA%A6%E7%9A%84layou/"/>
+    <id>http://pleaseyouya.com/2016/01/21/ScrollView解决超出屏幕高度的layou/</id>
+    <published>2016-01-20T16:22:53.000Z</published>
+    <updated>2016-01-20T16:28:39.000Z</updated>
+    <content type="html"><![CDATA[<p>做一个个人中心页面的时候，涉及到的布局超出了屏幕高度(布局包含了诸如收藏，钱包，优惠，登陆，注册等等)，然后发现超出屏幕的部分显示不出来，并且页面无法滑动。</p>
+<p>解决办法是，对于太长的布局，需要将其包在一个ScrollView当中。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">ScrollView</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">xmlns:app</span>=<span class="value">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    <span class="attribute">xmlns:tools</span>=<span class="value">"http://schemas.android.com/tools"</span></span><br><span class="line">    <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:orientation</span>=<span class="value">"vertical"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 超长布局 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 想多长都行 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">ScrollView</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>做一个个人中心页面的时候，涉及到的布局超出了屏幕高度(布局包含了诸如收藏，钱包，优惠，登陆，注册等等)，然后发现超出屏幕的部分显示不出来，并且页面无法滑动。</p>
+<p>解决办法是，对于太长的布局，需要将其包在一个ScrollView当中。<br><figure clas]]>
+    </summary>
+    
+      <category term="android" scheme="http://pleaseyouya.com/tags/android/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[ontouch和onTouchEvent的传递过程]]></title>
