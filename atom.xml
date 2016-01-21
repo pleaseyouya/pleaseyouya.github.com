@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-21T14:26:05.000Z</updated>
+  <updated>2016-01-21T15:31:41.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -13,6 +13,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[自定义View时如何自定义属性]]></title>
+    <link href="http://pleaseyouya.com/2016/01/21/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%97%B6%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B1%9E%E6%80%A7/"/>
+    <id>http://pleaseyouya.com/2016/01/21/自定义View时如何自定义属性/</id>
+    <published>2016-01-21T15:00:21.000Z</published>
+    <updated>2016-01-21T15:31:41.000Z</updated>
+    <content type="html"><![CDATA[<p>在自定义view的时候，如何自定义属性？<br>比如现在要自定义BadgedImageView，需要自定义gravity, padding, text, color属性。</p>
+<p>1、在styles.xml中声明属性集，集合中包含gravity, padding, text, color四种属性。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">declare-styleable</span> <span class="attribute">name</span>=<span class="value">"BadgedImageView"</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="title">declare-styleable</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>gravity包含了top, bottom, left, right, start, end这几种情况：<br><figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="built_in">attr</span> name = <span class="string">"badgeGravity"</span>&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"top"</span> <span class="built_in">value</span> = <span class="string">"0x30"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"bottom"</span> <span class="built_in">value</span> = <span class="string">"0x50"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"left"</span> <span class="built_in">value</span> = <span class="string">"0x03"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"right"</span> <span class="built_in">value</span> = <span class="string">"0x05"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"start"</span> <span class="built_in">value</span> = <span class="string">"0x00800003"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"end"</span> <span class="built_in">value</span> = <span class="string">"0x0080000"</span> /&gt;</span><br><span class="line">&lt;/<span class="built_in">attr</span>&gt;</span><br></pre></td></tr></table></figure></p>
+<p>padding是int类型<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;attr <span class="property">name</span> = <span class="string">"badgePadding"</span> format = <span class="string">"dimension"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>text是string类型<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;attr <span class="property">name</span> = <span class="string">"badgeText"</span> format = <span class="string">"string"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>color是color类型<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;attr <span class="property">name</span> = <span class="string">"badgeColor"</span> format = <span class="string">"color"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>2、编译过程中，自定义属性会被分配id，格式是：属性集_属性名。</p>
+<p>所以，gravity属性的id是<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BadgedImageView_badgeGravity</span><br></pre></td></tr></table></figure></p>
+<p>padding属性的id是<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BadgedImageView_badgePadding</span><br></pre></td></tr></table></figure></p>
+<p>text属性的id是<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BadgedImageView_badgeText</span><br></pre></td></tr></table></figure></p>
+<p>color属性的id是<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BadgedImageView_badgeColor</span><br></pre></td></tr></table></figure></p>
+<p>这些id，可用于在代码中提取自定义view的相应属性在layout文件中设置的值。</p>
+<p>3、如何在布局文件中使用<br>在layout文件中，需要先定义命名空间<br><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">xmlns:</span>app=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span><br></pre></td></tr></table></figure></p>
+<p>然后，在需要自定义view的地方，即可使用自定义属性<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;com<span class="class">.pleaseyouya</span><span class="class">.androidbasis</span><span class="class">.drawable</span><span class="class">.BadgedFourThreeImageView</span></span><br><span class="line">    android:id=<span class="string">"@+id/badge_dog"</span></span><br><span class="line">    android:layout_width=<span class="string">"300dp"</span></span><br><span class="line">    android:layout_height=<span class="string">"200dp"</span></span><br><span class="line">    android:src=<span class="string">"@drawable/dog"</span></span><br><span class="line">    app:badgeGravity=<span class="string">"top|right"</span></span><br><span class="line">    app:badgePadding=<span class="string">"20dp"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>4、自定义View如何获取自定义属性的值<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">TypedArray <span class="literal">a</span> = context.obtainStyledAttributes(attrs, R.styleable.BadgedImageView, <span class="number">0</span>, <span class="number">0</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">badgeGravity = <span class="literal">a</span>.getInt(R.styleable.BadgedImageView_badgeGravity, Gravity.END | Gravity.BOTTOM)<span class="comment">;</span></span><br><span class="line">badgePadding = <span class="literal">a</span>.getDimensionPixelSize(R.styleable.BadgedImageView_badgePadding, <span class="number">0</span>)<span class="comment">;</span></span><br><span class="line">badgeText = <span class="literal">a</span>.getString(R.styleable.BadgedImageView_badgeText)<span class="comment">;</span></span><br><span class="line">badgeColor = <span class="literal">a</span>.getColor(R.styleable.BadgedImageView_badgeColor, Color.WHITE)<span class="comment">;</span></span><br><span class="line"><span class="literal">a</span>.recycle()<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>在自定义view的时候，如何自定义属性？<br>比如现在要自定义BadgedImageView，需要自定义gravity, padding, text, color属性。</p>
+<p>1、在styles.xml中声明属性集，集合中包含gravity, padding, t]]>
+    </summary>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[浅谈xml:tools]]></title>
