@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-20T16:28:39.000Z</updated>
+  <updated>2016-01-21T14:26:05.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -13,6 +13,25 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[浅谈xml:tools]]></title>
+    <link href="http://pleaseyouya.com/2016/01/21/%E6%B5%85%E8%B0%88xml-tools/"/>
+    <id>http://pleaseyouya.com/2016/01/21/浅谈xml-tools/</id>
+    <published>2016-01-21T14:14:57.000Z</published>
+    <updated>2016-01-21T14:26:05.000Z</updated>
+    <content type="html"><![CDATA[<p>在layout布局文件中可以看到这个属性<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">xm</span><span class="variable">l:tools</span> = <span class="string">"http://schemas.android.com/tools"</span></span><br></pre></td></tr></table></figure></p>
+<p>这个属性是干什么的呢？</p>
+<p>开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。<br>然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。</p>
+<p>这时候，tools就派上用场了。<br>tools可以告诉android studio，tools命名空间下的属性只在预览效果时使用，在实际运行时，这些属性都会自动被忽略。</p>
+<p>比如：<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;TextView</span><br><span class="line">    android:layout_width = <span class="string">"wrap_content"</span></span><br><span class="line">    android:layout_height = <span class="string">"wrap_content"</span></span><br><span class="line">    tools:<span class="type">text</span> = <span class="string">"Hello World"</span></span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure></p>
+<p>硬编码的”Hello World”，在app运行时会被忽略的。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>在layout布局文件中可以看到这个属性<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td cl]]>
+    </summary>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[ScrollView解决超出屏幕高度的layou]]></title>

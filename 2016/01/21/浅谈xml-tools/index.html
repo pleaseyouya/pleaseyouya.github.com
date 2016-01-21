@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>浅谈xml:tools | Pleaseyouya&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="pleaseyouya">
+  
+  
+    <meta name="description" content="在layout布局文件中可以看到这个属性1xml:tools = &quot;http://schemas.android.com/tools&quot;
+这个属性是干什么的呢？
+开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。
+这时候，tools就派上用场了。tools可以告诉android studio，to">
+  
+  <meta name="description" content="在layout布局文件中可以看到这个属性1xml:tools = &quot;http://schemas.android.com/tools&quot;
+这个属性是干什么的呢？
+开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。
+这时候，tools就派上用场了。tools可以告诉android studio，to">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈xml:tools">
+<meta property="og:url" content="http://pleaseyouya.com/2016/01/21/浅谈xml-tools/index.html">
+<meta property="og:site_name" content="Pleaseyouya's Blog">
+<meta property="og:description" content="在layout布局文件中可以看到这个属性1xml:tools = &quot;http://schemas.android.com/tools&quot;
+这个属性是干什么的呢？
+开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。
+这时候，tools就派上用场了。tools可以告诉android studio，to">
+<meta property="og:updated_time" content="2016-01-21T14:26:05.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈xml:tools">
+<meta name="twitter:description" content="在layout布局文件中可以看到这个属性1xml:tools = &quot;http://schemas.android.com/tools&quot;
+这个属性是干什么的呢？
+开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。
+这时候，tools就派上用场了。tools可以告诉android studio，to">
+  
+    <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">Pleaseyouya&#39;s Blog</a></h1>
+    <p><a href="/">Step by step</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/01/21/浅谈xml-tools/">
+  <time datetime="2016-01-21T14:14:57.000Z">
+    2016-01-21
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">浅谈xml:tools</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>在layout布局文件中可以看到这个属性<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">xm</span><span class="variable">l:tools</span> = <span class="string">"http://schemas.android.com/tools"</span></span><br></pre></td></tr></table></figure></p>
+<p>这个属性是干什么的呢？</p>
+<p>开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。<br>然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。</p>
+<p>这时候，tools就派上用场了。<br>tools可以告诉android studio，tools命名空间下的属性只在预览效果时使用，在实际运行时，这些属性都会自动被忽略。</p>
+<p>比如：<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;TextView</span><br><span class="line">    android:layout_width = <span class="string">"wrap_content"</span></span><br><span class="line">    android:layout_height = <span class="string">"wrap_content"</span></span><br><span class="line">    tools:<span class="type">text</span> = <span class="string">"Hello World"</span></span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure></p>
+<p>硬编码的”Hello World”，在app运行时会被忽略的。</p>
+
+    
+  </div>
+  <footer>
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">评论</h1>
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">pleaseyouya</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+  var disqus_shortname = 'pleaseyouya';
+
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  }());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
