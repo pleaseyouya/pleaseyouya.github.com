@@ -62,6 +62,54 @@
   <header>
     
       <div class="icon"></div>
+      <a href="/2016/01/22/自定义drawable-内容文字/">
+  <time datetime="2016-01-21T16:11:30.000Z">
+    2016-01-22
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/01/22/自定义drawable-内容文字/">自定义drawable(内容文字)</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。</p>
+<p>1、设置文本相关属性<br>设置文本抗锯齿和子像素抗锯齿，让文本更平滑<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TextPaint textPaint = new TextPaint<span class="list">(<span class="keyword">Paint</span>.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p>设置字体，“sans-serif-black”，正常样式<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">textPaint</span><span class="class">.setTypeface</span>(<span class="tag">Typeface</span><span class="class">.create</span>("<span class="tag">sans-serif-black</span>", <span class="tag">Typeface</span><span class="class">.NORMAL</span>));</span><br></pre></td></tr></table></figure></p>
+<p>设置字体大小，单位为像素<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DisplayMetrics dm = context.getResources().getDisplayMetrics();</span><br><span class="line"><span class="keyword">float</span> scaledDensity = dm.scaledDensity;</span><br><span class="line">textPaint.setTextSize(<span class="number">12</span> * scaledDensity); <span class="comment">// 12dp</span></span><br></pre></td></tr></table></figure></p>
+<p>2、设置完属性后，获取文本宽高<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Rect textBounds = new Rect();</span><br><span class="line">textPaint.getTextBounds(<span class="type">text</span>, <span class="number">0</span>, <span class="type">text</span>.<span class="property">length</span>, textBounds);</span><br></pre></td></tr></table></figure></p>
+<p>3、获取drawable的宽高<br>宽等于文本宽度加上左右padding，高等于文本高度加上上下padding，单位像素<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">float</span> density = dm.density;</span><br><span class="line"><span class="built_in">float</span> padding = density * <span class="number">4</span>; <span class="comment">// 4dp</span></span><br><span class="line"><span class="variable">width</span> = (<span class="built_in">int</span>)(padding + textBounds.<span class="variable">width</span>() + padding);</span><br><span class="line"><span class="variable">height</span> = (<span class="built_in">int</span>)(padding + textBounds.<span class="variable">height</span>() + padding);</span><br></pre></td></tr></table></figure></p>
+<p>4、将文本画在bitmap的画布上<br>创建bitmap<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bitmap </span>= <span class="keyword">Bitmap.createBitmap(width, </span>height, <span class="keyword">Bitmap.Config.ARGB_8888);</span></span><br></pre></td></tr></table></figure></p>
+<p>设置文字透明<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bitmap.setHasAlpha(<span class="literal">true</span>);</span><br></pre></td></tr></table></figure></p>
+<p>获取bitmap的画布<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Canvas canvas = new Canvas<span class="list">(<span class="keyword">bitmap</span>)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p>设置画布抗锯齿<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Paint backgroundPaint = new Paint<span class="list">(<span class="keyword">Paint</span>.ANTI_ALIAS_FLAG)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p>设置画布背景颜色<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">backgroundPaint</span><span class="class">.setColor</span>(<span class="tag">badgeColor</span>);</span><br></pre></td></tr></table></figure></p>
+<p>将bitmap画成圆角<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">float</span> cornerRadius = <span class="number">2</span> * density; <span class="comment">// 2dp</span></span><br><span class="line">canvas.drawRoundRect(<span class="number">0</span>, <span class="number">0</span>, width, height, cornerRadius, cornerRadius, backgroundPaint);</span><br></pre></td></tr></table></figure></p>
+<p>将文字画在bitmap上，颜色为透明<br><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">textPaint<span class="class">.setXfermode</span>(new <span class="function">PorterDuffXfermode</span>(PorteDuff<span class="class">.Mode</span><span class="class">.CLEAR</span>));</span><br><span class="line"><span class="tag">canvas</span><span class="class">.drawText</span>(<span class="value">text</span>, <span class="attribute">padding</span>, <span class="attribute">height</span> - <span class="attribute">padding</span>, textPaint);</span><br></pre></td></tr></table></figure></p>
+<p>文字的起点是左下角(padding, height - padding)。</p>
+<p>5、将bitmap画在自定义的drawable上<br>```<br>public void draw(Canvas canvas) {<br>    if (bitmap != null) {<br>        canvas.drawBitmap(bitmap, getBounds().left, getBounds().top, paint);<br>    }<br>}</p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
       <a href="/2016/01/21/自定义View时如何自定义属性/">
   <time datetime="2016-01-21T15:00:21.000Z">
     2016-01-21
@@ -423,47 +471,6 @@
 <p>现在git知道了推送到仓库<a href="https://pleaseyouya/AndroidBasis.git，并且给该仓库起名叫做origin，当然，也可以起其他的名字。" target="_blank" rel="external">https://pleaseyouya/AndroidBasis.git，并且给该仓库起名叫做origin，当然，也可以起其他的名字。</a></p>
 <pre><code>3、推送本地项目到github
 </code></pre><p>最后，将本地的项目推送到github，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">git</span> <span class="keyword">push </span>-u origin master</span><br></pre></td></tr></table></figure></p>
-
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2015/12/12/Android-Listview-item-confused-with-image-showing/">
-  <time datetime="2015-12-12T06:17:08.000Z">
-    2015-12-12
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2015/12/12/Android-Listview-item-confused-with-image-showing/">Android Listview item confused with image showing</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <p><strong>Android</strong> Listview出现item图片错乱显示的问题</p>
-<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">new</span> Android Listview出现<span class="keyword">item</span>图片错乱显示的问题</span><br></pre></td></tr></table></figure>
-<p>这仅仅是一篇测试Markdown语法的文章。 </p>
-<blockquote>
-<p>Every interaction is both precious and an opportunity to delight.</p>
-</blockquote>
-<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CommonAdapter</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCount</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">getView</span>(<span class="params">View convertView, ViewGroup parent, <span class="keyword">int</span> pos</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>$head$</p>
 
     
   </div>
