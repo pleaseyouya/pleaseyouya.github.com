@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>自定义view(view上添加一个stateful drawable) | Pleaseyouya&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="pleaseyouya">
+  
+  
+    <meta name="description" content="新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。1、必须覆盖verifyDrawable，view上的所有drawable都必须调用这个方法，并返回true。1234@Override protected boolean verifyDrawable(Drawable who) &amp;#123;    return su">
+  
+  <meta name="description" content="新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。1、必须覆盖verifyDrawable，view上的所有drawable都必须调用这个方法，并返回true。1234@Override protected boolean verifyDrawable(Drawable who) &amp;#123;    return su">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自定义view(view上添加一个stateful drawable)">
+<meta property="og:url" content="http://pleaseyouya.com/2016/01/23/自定义view-view上添加一个stateful-drawable/index.html">
+<meta property="og:site_name" content="Pleaseyouya's Blog">
+<meta property="og:description" content="新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。1、必须覆盖verifyDrawable，view上的所有drawable都必须调用这个方法，并返回true。1234@Override protected boolean verifyDrawable(Drawable who) &amp;#123;    return su">
+<meta property="og:updated_time" content="2016-01-23T11:29:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自定义view(view上添加一个stateful drawable)">
+<meta name="twitter:description" content="新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。1、必须覆盖verifyDrawable，view上的所有drawable都必须调用这个方法，并返回true。1234@Override protected boolean verifyDrawable(Drawable who) &amp;#123;    return su">
+  
+    <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">Pleaseyouya&#39;s Blog</a></h1>
+    <p><a href="/">Step by step</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/01/23/自定义view-view上添加一个stateful-drawable/">
+  <time datetime="2016-01-23T07:11:17.000Z">
+    2016-01-23
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">自定义view(view上添加一个stateful drawable)</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。<br>1、必须覆盖verifyDrawable，view上的所有drawable都必须调用这个方法，并返回true。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span> </span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">boolean</span> <span class="title">verifyDrawable</span><span class="params">(Drawable who)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.verifyDrawable(who) || (who==foreground);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>原因在于，view本身在重绘的时候，会调用invalidateDrawable<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Invalidates the specified Drawable.  </span></span><br><span class="line"><span class="comment">//默认实现，重新绘制该视图本身  </span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">invalidateDrawable</span><span class="params">(Drawable drawable)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (verifyDrawable(drawable)) &#123;</span><br><span class="line">        <span class="comment">//是否是同一个Drawable对象，通常为真  </span></span><br><span class="line">        <span class="keyword">final</span> Rect dirty=drawable.getBounds();</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> scrollX=mScrollX;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> scrollY=mScrollY;</span><br><span class="line">        <span class="comment">//重新请求绘制该View，即重新调用该View的draw()方法  </span></span><br><span class="line">        ...  </span><br><span class="line">        invalidate(dirty.left + scrollX, dirty.top + scrollY, dirty.right + scrollX, dirty.bottom + scrollY);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>所以，如果要让drawable显示出来，verifyDrawable必须对该drawable，返回true。</p>
+<p>2、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ </p>
+<blockquote>
+<p>view状态发生变化，会引起其内含的drawable的状态也发生变化。</p>
+</blockquote>
+<p>view在状态改变时，会调用refreshDrawableState，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">refreshDrawableState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ... </span><br><span class="line">    drawableStateChanged();</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">drawableStateChanged</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Drawable d=mBackground;</span><br><span class="line">    <span class="keyword">if</span> (d !=<span class="keyword">null</span> &amp;&amp; d.isStateful()) &#123;</span><br><span class="line">        d.setState(getDrawableState());</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>drawableStateChanged对背景图片进行了重绘，绘制的实现在setState当中实现。</p>
+<p>调用setState的前提是isStateful返回true。Drawable类的isStateful默认是返回false的。因此，我们要添加的foreground，其内部实现必须override isStateful方法。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span> </span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">isStateful</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们这里用的foreground，如果继承自StateListDrawable，则不需要override，因为StateListDrawable中isStateful返回true。事实上，一个selector xml文件就对应了一个StateListDrawable。 </p>
+<p>现在想要添加foreground，所以，需要override drawableStateChanged这个方法，在原有逻辑的基础上，添加foreground的状态同步。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span> </span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">drawableStateChanged</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.drawableStateChanged();</span><br><span class="line">    <span class="keyword">if</span> (foreground !=<span class="keyword">null</span> &amp;&amp; foreground.isStateful()) &#123;</span><br><span class="line">        foreground.setState(getDrawableState());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>3、foreground如何通过setState同步状态的<br>看下Drawable类中setState的实现<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">setState</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span>[] stateSet)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!Arrays.equals(mStateSet, stateSet)) &#123;</span><br><span class="line">        mStateSet=stateSet;</span><br><span class="line">        <span class="function"><span class="keyword">return</span> <span class="title">onStateChange</span><span class="params">(stateSet)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onStateChange</span><span class="params">(<span class="keyword">int</span>[] stateSet)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//要找出第一个吻合当前状态的Drawable对象 </span></span><br><span class="line">    <span class="keyword">int</span> idx=mStateListState.indexOfStateSet(stateSet);</span><br><span class="line">    ... <span class="comment">//获取对应索引位置的Drawable对象  </span></span><br><span class="line">    <span class="keyword">if</span> (selectDrawable(idx)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">selectDrawable</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (idx==mCurIndex) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">if</span> (idx &gt;=<span class="number">0</span> &amp;&amp; idx &lt; mDrawableContainerState.mNumChildren) &#123;</span><br><span class="line">        <span class="keyword">final</span> Drawable d=mDrawableContainerState.getChild(idx);</span><br><span class="line">        mCurrDrawable=d;</span><br><span class="line">        mCurIndex=idx;</span><br><span class="line">        ...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mCurrDrawable=<span class="keyword">null</span>;</span><br><span class="line">        mCurIndex=-<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    invalidateSelf();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>stateSet数组代表了新的状态，比如(pressed, window_focused)。只有新的状态和当前状态不一致，才会重绘。</p>
+<p>通过新的状态，找到对应的drawable，并进行重绘。<br>重绘在invalidateSelf中实现。</p>
+<p>4、drawable如何实现重绘<br>看下drawable类的invalidateSelf的实现，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">invalidateSelf</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Callback callback = getCallback();</span><br><span class="line">    <span class="keyword">if</span> (callback != <span class="keyword">null</span>) &#123;</span><br><span class="line">        callback.invalidateDrawable(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过callback接口的invalidateDrawable来实现的，这个callback就是view本身了。</p>
+<p>所以，需要对foreground设置callback为view本身。<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">foreground.setCallback(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure></p>
+
+    
+  </div>
+  <footer>
+    
+      
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/android/">android</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">评论</h1>
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">pleaseyouya</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+  var disqus_shortname = 'pleaseyouya';
+
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  }());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
