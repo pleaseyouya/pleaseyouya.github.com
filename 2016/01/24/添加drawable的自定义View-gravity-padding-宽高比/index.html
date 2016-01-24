@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>添加drawable的自定义View(gravity, padding, 宽高比 | Pleaseyouya&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="pleaseyouya">
+  
+  
+    <meta name="description" content="1、如何设置drawable的padding和gravity可以在draw之前，通过Gravity的apply方法实现。
+
+public static void apply (int gravity, int w, int h, Rect container, int xAdj, int yAdj, Rect outRect)
+
+假设drawable命名为badge，gravity是badgeGr">
+  
+  <meta name="description" content="1、如何设置drawable的padding和gravity可以在draw之前，通过Gravity的apply方法实现。
+
+public static void apply (int gravity, int w, int h, Rect container, int xAdj, int yAdj, Rect outRect)
+
+假设drawable命名为badge，gravity是badgeGr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="添加drawable的自定义View(gravity, padding, 宽高比">
+<meta property="og:url" content="http://pleaseyouya.com/2016/01/24/添加drawable的自定义View-gravity-padding-宽高比/index.html">
+<meta property="og:site_name" content="Pleaseyouya's Blog">
+<meta property="og:description" content="1、如何设置drawable的padding和gravity可以在draw之前，通过Gravity的apply方法实现。
+
+public static void apply (int gravity, int w, int h, Rect container, int xAdj, int yAdj, Rect outRect)
+
+假设drawable命名为badge，gravity是badgeGr">
+<meta property="og:updated_time" content="2016-01-24T03:45:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="添加drawable的自定义View(gravity, padding, 宽高比">
+<meta name="twitter:description" content="1、如何设置drawable的padding和gravity可以在draw之前，通过Gravity的apply方法实现。
+
+public static void apply (int gravity, int w, int h, Rect container, int xAdj, int yAdj, Rect outRect)
+
+假设drawable命名为badge，gravity是badgeGr">
+  
+    <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">Pleaseyouya&#39;s Blog</a></h1>
+    <p><a href="/">Step by step</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/01/24/添加drawable的自定义View-gravity-padding-宽高比/">
+  <time datetime="2016-01-24T03:20:42.000Z">
+    2016-01-24
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">添加drawable的自定义View(gravity, padding, 宽高比</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>1、如何设置drawable的padding和gravity<br>可以在draw之前，通过Gravity的apply方法实现。</p>
+<blockquote>
+<p>public static void apply (int gravity, int w, int h, Rect container, int xAdj, int yAdj, Rect outRect)</p>
+</blockquote>
+<p>假设drawable命名为badge，gravity是badgeGravity，padding是badgePadding，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">Rect</span> <span class="keyword">bound </span>= <span class="keyword">badge.getBounds();</span><br><span class="line"></span><span class="label">Gravity.apply</span>(<span class="keyword">badgeGravity, </span></span><br><span class="line">    <span class="keyword">badge.getIntrinsicWidth(), </span><span class="keyword">badge.getIntrinsicHeight(), </span></span><br><span class="line">    new Rect(<span class="number">0</span>, <span class="number">0</span>, getWidth(), getHeight()), </span><br><span class="line">    <span class="keyword">badgePadding, </span><span class="keyword">badgePadding, </span></span><br><span class="line">    <span class="keyword">bound);</span><br><span class="line"></span><span class="keyword">badge.setBounds(bound);</span></span><br></pre></td></tr></table></figure></p>
+<p>2、如何设置形状为正方形<br>需要重写onMeasure，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthSpec, <span class="keyword">int</span>  heightSpec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onMeasure(widthSpec, heightSpec);</span><br><span class="line">    <span class="keyword">int</span> fixedSize = Math.min(getMeasuredWidth(), getMeasuredHeight());</span><br><span class="line">    setMeasuredDimension(fixedSize, fixedSize);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>关键就在于setMeasureDimension(fixedSize, fixedSize)。<br>在super.onMeasure里面，setMeasureDimension已经执行过，所以必须在后面再调用一次，改成宽高相等。</p>
+<p>还有另一种方法，设置heightSpec和widthSpec一致，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthSpec, <span class="keyword">int</span>  heightSpec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> hSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthSpec),</span><br><span class="line">            MeasureSpec.EXACTLY);</span><br><span class="line">    <span class="keyword">super</span>.onMeasure(widthSpec, hSpec);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注意，只能根据widthSpec，调整heightSpec。反过来没有效果。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthSpec, <span class="keyword">int</span>  heightSpec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> wSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightSpec),</span><br><span class="line">            MeasureSpec.EXACTLY);</span><br><span class="line">    <span class="keyword">super</span>.onMeasure(wSpec, heightSpec);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这种方式没有效果。</p>
+
+    
+  </div>
+  <footer>
+    
+      
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/android/">android</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">评论</h1>
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">pleaseyouya</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+  var disqus_shortname = 'pleaseyouya';
+
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  }());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

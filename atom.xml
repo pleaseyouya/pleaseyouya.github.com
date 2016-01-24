@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-24T02:53:44.000Z</updated>
+  <updated>2016-01-24T03:45:24.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -13,6 +13,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[添加drawable的自定义View(gravity, padding, 宽高比]]></title>
+    <link href="http://pleaseyouya.com/2016/01/24/%E6%B7%BB%E5%8A%A0drawable%E7%9A%84%E8%87%AA%E5%AE%9A%E4%B9%89View-gravity-padding-%E5%AE%BD%E9%AB%98%E6%AF%94/"/>
+    <id>http://pleaseyouya.com/2016/01/24/添加drawable的自定义View-gravity-padding-宽高比/</id>
+    <published>2016-01-24T03:20:42.000Z</published>
+    <updated>2016-01-24T03:45:24.000Z</updated>
+    <content type="html"><![CDATA[<p>1、如何设置drawable的padding和gravity<br>可以在draw之前，通过Gravity的apply方法实现。</p>
+<blockquote>
+<p>public static void apply (int gravity, int w, int h, Rect container, int xAdj, int yAdj, Rect outRect)</p>
+</blockquote>
+<p>假设drawable命名为badge，gravity是badgeGravity，padding是badgePadding，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">Rect</span> <span class="keyword">bound </span>= <span class="keyword">badge.getBounds();</span><br><span class="line"></span><span class="label">Gravity.apply</span>(<span class="keyword">badgeGravity, </span></span><br><span class="line">    <span class="keyword">badge.getIntrinsicWidth(), </span><span class="keyword">badge.getIntrinsicHeight(), </span></span><br><span class="line">    new Rect(<span class="number">0</span>, <span class="number">0</span>, getWidth(), getHeight()), </span><br><span class="line">    <span class="keyword">badgePadding, </span><span class="keyword">badgePadding, </span></span><br><span class="line">    <span class="keyword">bound);</span><br><span class="line"></span><span class="keyword">badge.setBounds(bound);</span></span><br></pre></td></tr></table></figure></p>
+<p>2、如何设置形状为正方形<br>需要重写onMeasure，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthSpec, <span class="keyword">int</span>  heightSpec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onMeasure(widthSpec, heightSpec);</span><br><span class="line">    <span class="keyword">int</span> fixedSize = Math.min(getMeasuredWidth(), getMeasuredHeight());</span><br><span class="line">    setMeasuredDimension(fixedSize, fixedSize);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>关键就在于setMeasureDimension(fixedSize, fixedSize)。<br>在super.onMeasure里面，setMeasureDimension已经执行过，所以必须在后面再调用一次，改成宽高相等。</p>
+<p>还有另一种方法，设置heightSpec和widthSpec一致，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthSpec, <span class="keyword">int</span>  heightSpec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> hSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthSpec),</span><br><span class="line">            MeasureSpec.EXACTLY);</span><br><span class="line">    <span class="keyword">super</span>.onMeasure(widthSpec, hSpec);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注意，只能根据widthSpec，调整heightSpec。反过来没有效果。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthSpec, <span class="keyword">int</span>  heightSpec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> wSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightSpec),</span><br><span class="line">            MeasureSpec.EXACTLY);</span><br><span class="line">    <span class="keyword">super</span>.onMeasure(wSpec, heightSpec);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这种方式没有效果。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>1、如何设置drawable的padding和gravity<br>可以在draw之前，通过Gravity的apply方法实现。</p>
+<blockquote>
+<p>public static void apply (int gravity, int w, int h,]]>
+    </summary>
+    
+      <category term="android" scheme="http://pleaseyouya.com/tags/android/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[自定义view(view上添加一个stateful drawable)]]></title>
