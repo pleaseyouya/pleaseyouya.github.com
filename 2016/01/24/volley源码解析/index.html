@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>volley源码解析 | Pleaseyouya&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="pleaseyouya">
+  
+  
+    <meta name="description" content="怎么对源码进行解析？从什么样的角度进行描述，以避免像写流水账一样，前后毫无衔接？一直都在思考这个问题。在还没有找到合适的方式前，还是先从实际的例子出发，然后对例子的内部流程是怎么走的，进行一个分析吧。
+看下面这个例子，123RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());StringRequest getS">
+  
+  <meta name="description" content="怎么对源码进行解析？从什么样的角度进行描述，以避免像写流水账一样，前后毫无衔接？一直都在思考这个问题。在还没有找到合适的方式前，还是先从实际的例子出发，然后对例子的内部流程是怎么走的，进行一个分析吧。
+看下面这个例子，123RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());StringRequest getS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="volley源码解析">
+<meta property="og:url" content="http://pleaseyouya.com/2016/01/24/volley源码解析/index.html">
+<meta property="og:site_name" content="Pleaseyouya's Blog">
+<meta property="og:description" content="怎么对源码进行解析？从什么样的角度进行描述，以避免像写流水账一样，前后毫无衔接？一直都在思考这个问题。在还没有找到合适的方式前，还是先从实际的例子出发，然后对例子的内部流程是怎么走的，进行一个分析吧。
+看下面这个例子，123RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());StringRequest getS">
+<meta property="og:updated_time" content="2016-01-24T13:37:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="volley源码解析">
+<meta name="twitter:description" content="怎么对源码进行解析？从什么样的角度进行描述，以避免像写流水账一样，前后毫无衔接？一直都在思考这个问题。在还没有找到合适的方式前，还是先从实际的例子出发，然后对例子的内部流程是怎么走的，进行一个分析吧。
+看下面这个例子，123RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());StringRequest getS">
+  
+    <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">Pleaseyouya&#39;s Blog</a></h1>
+    <p><a href="/">Step by step</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/01/24/volley源码解析/">
+  <time datetime="2016-01-24T12:52:06.000Z">
+    2016-01-24
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">volley源码解析</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>怎么对源码进行解析？从什么样的角度进行描述，以避免像写流水账一样，前后毫无衔接？一直都在思考这个问题。<br>在还没有找到合适的方式前，还是先从实际的例子出发，然后对例子的内部流程是怎么走的，进行一个分析吧。</p>
+<p>看下面这个例子，<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());</span><br><span class="line">StringRequest getStringRequest = <span class="keyword">new</span> StringRequest(<span class="string">"http://www.baidu.com"</span>, <span class="keyword">new</span> ResponseListener(), <span class="keyword">new</span> ResponseErrorListener());</span><br><span class="line">mQueue.<span class="built_in">add</span>(getStringRequest);</span><br></pre></td></tr></table></figure></p>
+<p>请求url的数据，并设置空的response listener和error listener。</p>
+
+    
+  </div>
+  <footer>
+    
+      
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/android/">android</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">评论</h1>
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">pleaseyouya</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+  var disqus_shortname = 'pleaseyouya';
+
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  }());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
