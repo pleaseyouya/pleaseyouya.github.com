@@ -11,37 +11,41 @@
   
   
     <meta name="description" content="新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。
-1、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ 
+一、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ 
 
 view状态发生变化，会引起其内含的drawable的状态也发生变化。
 
-view在状态改变时，会调用refreshDrawableState，12345678910111213pub">
+1、view在状态改变时，会调用refreshDrawableState
+12345678910111213p">
   
   <meta name="description" content="新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。
-1、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ 
+一、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ 
 
 view状态发生变化，会引起其内含的drawable的状态也发生变化。
 
-view在状态改变时，会调用refreshDrawableState，12345678910111213pub">
+1、view在状态改变时，会调用refreshDrawableState
+12345678910111213p">
 <meta property="og:type" content="article">
 <meta property="og:title" content="自定义view(view上添加一个stateful drawable)">
 <meta property="og:url" content="http://pleaseyouya.com/2016/01/23/自定义view-view上添加一个stateful-drawable/index.html">
 <meta property="og:site_name" content="Pleaseyouya's Blog">
 <meta property="og:description" content="新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。
-1、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ 
+一、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ 
 
 view状态发生变化，会引起其内含的drawable的状态也发生变化。
 
-view在状态改变时，会调用refreshDrawableState，12345678910111213pub">
-<meta property="og:updated_time" content="2016-01-23T15:54:09.000Z">
+1、view在状态改变时，会调用refreshDrawableState
+12345678910111213p">
+<meta property="og:updated_time" content="2016-01-24T02:53:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="自定义view(view上添加一个stateful drawable)">
 <meta name="twitter:description" content="新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。
-1、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ 
+一、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ 
 
 view状态发生变化，会引起其内含的drawable的状态也发生变化。
 
-view在状态改变时，会调用refreshDrawableState，12345678910111213pub">
+1、view在状态改变时，会调用refreshDrawableState
+12345678910111213p">
   
     <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
   
@@ -95,11 +99,12 @@ view在状态改变时，会调用refreshDrawableState，12345678910111213pub">
   <div class="entry">
     
       <p>新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。</p>
-<p>1、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ </p>
+<p>一、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ </p>
 <blockquote>
 <p>view状态发生变化，会引起其内含的drawable的状态也发生变化。</p>
 </blockquote>
-<p>view在状态改变时，会调用refreshDrawableState，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">refreshDrawableState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ... </span><br><span class="line">    drawableStateChanged();</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">drawableStateChanged</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Drawable d=mBackground;</span><br><span class="line">    <span class="keyword">if</span> (d !=<span class="keyword">null</span> &amp;&amp; d.isStateful()) &#123;</span><br><span class="line">        d.setState(getDrawableState());</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>1、view在状态改变时，会调用refreshDrawableState</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">refreshDrawableState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ... </span><br><span class="line">    drawableStateChanged();</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">drawableStateChanged</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Drawable d=mBackground;</span><br><span class="line">    <span class="keyword">if</span> (d !=<span class="keyword">null</span> &amp;&amp; d.isStateful()) &#123;</span><br><span class="line">        d.setState(getDrawableState());</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>drawableStateChanged对背景图片进行了重绘，绘制的实现在setState当中实现。</p>
 <p>调用setState的前提是isStateful返回true。Drawable类的isStateful默认是返回false的。因此，我们要添加的foreground，其内部实现必须override isStateful方法。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span> </span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">isStateful</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>我们这里用的foreground，如果继承自StateListDrawable，则不需要override，因为StateListDrawable中isStateful返回true。事实上，一个selector xml文件就对应了一个StateListDrawable。 </p>
@@ -113,6 +118,9 @@ view在状态改变时，会调用refreshDrawableState，12345678910111213pub">
 <p>4、view调用invalidateDrawable重绘<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Invalidates the specified Drawable.  </span></span><br><span class="line"><span class="comment">//默认实现，重新绘制该视图本身  </span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">invalidateDrawable</span><span class="params">(Drawable drawable)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (verifyDrawable(drawable)) &#123;</span><br><span class="line">        <span class="comment">//是否是同一个Drawable对象，通常为真  </span></span><br><span class="line">        <span class="keyword">final</span> Rect dirty=drawable.getBounds();</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> scrollX=mScrollX;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> scrollY=mScrollY;</span><br><span class="line">        <span class="comment">//重新请求绘制该View，即重新调用该View的draw()方法  </span></span><br><span class="line">        ...  </span><br><span class="line">        invalidate(dirty.left + scrollX, dirty.top + scrollY, dirty.right + scrollX, dirty.bottom + scrollY);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>所以，如果要让drawable显示出来，verifyDrawable必须对该drawable，返回true。</p>
 <p>必须覆盖verifyDrawable，view上的所有drawable都必须调用这个方法，并返回true。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span> </span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">boolean</span> <span class="title">verifyDrawable</span><span class="params">(Drawable who)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.verifyDrawable(who) || (who==foreground);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>二、measure-layout-draw绘制流程中foreground如何添加进去<br>measure采用默认的实现方式即可。</p>
+<p>layout过程中有一个方法必须覆盖，onSizeChanged，因为该方法默认是空实现。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onSizeChanged</span><span class="params">(<span class="keyword">int</span> w, <span class="keyword">int</span> h, <span class="keyword">int</span> oldw, <span class="keyword">int</span> oldh)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onSizeChanged(w, h, oldw, oldh);</span><br><span class="line">    <span class="keyword">if</span> (foreground != <span class="keyword">null</span>) &#123;</span><br><span class="line">        foreground.setBounds(<span class="number">0</span>, <span class="number">0</span>, w, h);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>draw()方法也需要override，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">draw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.draw(canvas);</span><br><span class="line">    <span class="keyword">if</span> (foreground != <span class="keyword">null</span>) &#123;</span><br><span class="line">        foreground.draw(canvas);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
     
   </div>
