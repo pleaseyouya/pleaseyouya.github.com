@@ -84,7 +84,7 @@
 <p>一共有两个队列：存储网络请求的mNetworkQueue，直接从缓存获取结果的请求队列mCacheQueue。</p>
 <p>mWaitingRequests存储了不同类型的缓存请求, 用cacheKey来识别不同的缓存请求。<br>每个cacheKey对应的value，是一个链表。链表里存储了等待执行的多个同种请求。</p>
 <p>如果请求不从缓存取，则直接加入mNetworkQueue。否则，加入mCacheQueue，从缓存取结果。</p>
-<p>1、mCacheQueue和mNetworkQueue里面的请求由谁来处理？<br>例子中第一行，创建了一个requestQueue对象，</p>
+<p>1、mCacheQueue和mNetworkQueue里面的请求由谁来处理？<br>例子中第一行，创建了一个requestQueue对象，<br>```</p>
 
     
   </div>
