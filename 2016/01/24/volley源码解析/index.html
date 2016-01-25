@@ -21,7 +21,7 @@
 <meta property="og:site_name" content="Pleaseyouya's Blog">
 <meta property="og:description" content="怎么对源码进行解析？从什么样的角度进行描述，以避免像写流水账一样，前后毫无衔接？一直都在思考这个问题。在还没有找到合适的方式前，还是先从实际的例子出发，然后对例子的内部流程是怎么走的，进行一个分析吧。
 看下面这个例子，123RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());StringRequest getS">
-<meta property="og:updated_time" content="2016-01-24T16:48:34.000Z">
+<meta property="og:updated_time" content="2016-01-25T16:25:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="volley源码解析">
 <meta name="twitter:description" content="怎么对源码进行解析？从什么样的角度进行描述，以避免像写流水账一样，前后毫无衔接？一直都在思考这个问题。在还没有找到合适的方式前，还是先从实际的例子出发，然后对例子的内部流程是怎么走的，进行一个分析吧。
@@ -85,7 +85,11 @@
 <p>一共有两个队列：存储网络请求的mNetworkQueue，直接从缓存获取结果的请求队列mCacheQueue。</p>
 <p>mWaitingRequests存储了不同类型的缓存请求, 用cacheKey来识别不同的缓存请求。<br>每个cacheKey对应的value，是一个链表。链表里存储了等待执行的多个同种请求。</p>
 <p>如果请求不从缓存取，则直接加入mNetworkQueue。否则，加入mCacheQueue，从缓存取结果。</p>
-<p>1、mCacheQueue和mNetworkQueue里面的请求由谁来处理？<br>例子中第一行，创建了一个requestQueue对象，<br>```</p>
+<p>1、mCacheQueue和mNetworkQueue里面的请求由谁来处理？<br>例子中第一行，创建了一个requestQueue对象，<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RequestQueue <span class="title">newRequestQueue</span><span class="params">(Context context, HttpStack <span class="built_in">stack</span>)</span> </span>&#123;</span><br><span class="line">    File cacheDir = <span class="keyword">new</span> File(context.getCacheDir(), DEFAULT_CACHE_DIR);</span><br><span class="line">    ...</span><br><span class="line">    Network network = <span class="keyword">new</span> BasicNetwork(<span class="built_in">stack</span>);</span><br><span class="line"></span><br><span class="line">    RequestQueue <span class="built_in">queue</span> = <span class="keyword">new</span> RequestQueue(<span class="keyword">new</span> DiskBasedCache(cacheDir), network);</span><br><span class="line">    <span class="built_in">queue</span>.start();</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">queue</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>创建request queue，会立即调用queue.start()。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    stop();  </span><br><span class="line">    mCacheDispatcher = <span class="keyword">new</span> CacheDispatcher(mCacheQueue, mNetworkQueue, mCache,mDelivery);</span><br><span class="line">    mCacheDispatcher.start();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mDispatchers.length; i++) &#123;</span><br><span class="line">        NetworkDispatcher networkDispatcher = <span class="keyword">new</span> NetworkDispatcher(mNetworkQueue, mNetwork,mCache, mDelivery);</span><br><span class="line">        mDispatchers[i] = networkDispatcher;</span><br><span class="line">        networkDispatcher.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>start开启了一个处理请求缓存线程mCacheDispatcher，和4个处理请求网络的线程networkDispatcher。</p>
+<p>mCacheQueue里面的请求由mCacheDispatcher线程处理。<br>mNetworkQueue里面的请求由4个netWorkDispatcher线程处理。</p>
 
     
   </div>
