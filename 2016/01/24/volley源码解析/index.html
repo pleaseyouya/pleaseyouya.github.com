@@ -21,7 +21,7 @@
 <meta property="og:site_name" content="Pleaseyouya's Blog">
 <meta property="og:description" content="怎么对源码进行解析？从什么样的角度进行描述，以避免像写流水账一样，前后毫无衔接？一直都在思考这个问题。在还没有找到合适的方式前，还是先从实际的例子出发，然后对例子的内部流程是怎么走的，进行一个分析吧。
 看下面这个例子，123RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());StringRequest getS">
-<meta property="og:updated_time" content="2016-01-26T16:50:18.000Z">
+<meta property="og:updated_time" content="2016-01-26T17:24:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="volley源码解析">
 <meta name="twitter:description" content="怎么对源码进行解析？从什么样的角度进行描述，以避免像写流水账一样，前后毫无衔接？一直都在思考这个问题。在还没有找到合适的方式前，还是先从实际的例子出发，然后对例子的内部流程是怎么走的，进行一个分析吧。
@@ -103,6 +103,7 @@
 <p>如果不一样，将networkResponse转化为需要的response。</p>
 <p>如果response需要缓存，将response缓存在mCache。</p>
 <p>最后，回传resonse。</p>
+<p>4、mNetwork.preformRequest是如何执行网络请求的？</p>
 
     
   </div>
