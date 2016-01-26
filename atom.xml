@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-26T01:02:01.000Z</updated>
+  <updated>2016-01-26T16:50:18.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://pleaseyouya.com/2016/01/24/volley%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
     <id>http://pleaseyouya.com/2016/01/24/volley源码解析/</id>
     <published>2016-01-24T12:52:06.000Z</published>
-    <updated>2016-01-26T01:02:01.000Z</updated>
+    <updated>2016-01-26T16:50:18.000Z</updated>
     <content type="html"><![CDATA[<p>怎么对源码进行解析？从什么样的角度进行描述，以避免像写流水账一样，前后毫无衔接？一直都在思考这个问题。<br>在还没有找到合适的方式前，还是先从实际的例子出发，然后对例子的内部流程是怎么走的，进行一个分析吧。</p>
 <p>看下面这个例子，<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());</span><br><span class="line">StringRequest getStringRequest = <span class="keyword">new</span> StringRequest(<span class="string">"http://www.baidu.com"</span>, <span class="keyword">new</span> ResponseListener(), <span class="keyword">new</span> ResponseErrorListener());</span><br><span class="line">mQueue.<span class="built_in">add</span>(getStringRequest);</span><br></pre></td></tr></table></figure></p>
 <p>请求url的数据，并设置空的response listener和error listener。</p>
@@ -38,6 +38,13 @@
 <p>否则，根据request的cache key，在缓存中取相应的entry。<br>如果缓存中不存在该key对应的entry(缓存未命中)，将request转到mNewtworQueue中。<br>结束对该请求的处理。</p>
 <p>如果取得entry，验证entry是否过期。<br>如果过期，带上entry，将request转到mNetworkQueue中。<br>结束对该请求的处理。</p>
 <p>如果未过期，验证entry是否需要新鲜度验证。<br>如果需要，带上entry，将request转到mNetworkQueue中。<br>否则，将entry回传到response。</p>
+<p>3、networkDispatcher线程如何处理mNetworkQueue里的请求<br>networkDispatcher线程启动，开始run方法<br><figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> void run() &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="built_in">request</span> = mQueue.take();</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">request</span>.isCanceled()) &#123;</span><br><span class="line">            <span class="built_in">request</span>.finish(<span class="string">"network-discard-cancelled"</span>);</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line">        NetworkResponse networkResponse = mNetwork</span><br><span class="line">                .performRequest(<span class="built_in">request</span>);</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">if</span> (networkResponse.notModified</span><br><span class="line">                &amp;&amp; <span class="built_in">request</span>.hasHadResponseDelivered()) &#123;</span><br><span class="line">            <span class="built_in">request</span>.finish(<span class="string">"not-modified"</span>);</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">Response</span>&lt;?&gt; <span class="built_in">response</span> = <span class="built_in">request</span></span><br><span class="line">                .parseNetworkResponse(networkResponse);</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">request</span>.shouldCache() &amp;&amp; <span class="built_in">response</span>.cacheEntry != <span class="literal">null</span>) &#123;</span><br><span class="line">            mCache.put(<span class="built_in">request</span>.getCacheKey(), <span class="built_in">response</span>.cacheEntry);</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">        ...</span><br><span class="line">        mDelivery.postResponse(<span class="built_in">request</span>, <span class="built_in">response</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>while (true)说明networkDispatcher线程会不断处理mNetworkQueue里的请求。</p>
+<p>如果请求被取消，则不处理，继续下一个请求。</p>
+<p>否则，执行网络请求，得到networkResponse。<br>如果该networkResponse和之前同种请求的response一样，则不处理本次的response，继续下一个请求。</p>
+<p>如果不一样，将networkResponse转化为需要的response。</p>
+<p>如果response需要缓存，将response缓存在mCache。</p>
+<p>最后，回传resonse。</p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>怎么对源码进行解析？从什么样的角度进行描述，以避免像写流水账一样，前后毫无衔接？一直都在思考这个问题。<br>在还没有找到合适的方式前，还是先从实际的例子出发，然后对例子的内部流程是怎么走的，进行一个分析吧。</p>
