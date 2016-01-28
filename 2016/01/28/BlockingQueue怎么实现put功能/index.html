@@ -10,38 +10,26 @@
     <meta name="author" content="pleaseyouya">
   
   
-    <meta name="description" content="[TOC]
-Markdown简介
-Markdown 是一种轻量级标记语言，它允许人们使用易读易写的纯文本格式编写文档，然后转换成格式丰富的HTML页面。    —— 维基百科
-
-正如您在阅读的这份文档，它使用简单的符号标识不同的标题，将某些文字标记为粗体或者斜体，创建一个链接或一个脚注[^demo]。下面列举了几个高级功能，更多语法请按Ctrl + /查看帮助。 
-代码块12345678910@r">
+    <meta name="description" content="volley源码中，网络请求队列mNetworkQueue被缓存线程和若干个网络线程访问，需要同步。volley采用PriorityBlockingQueue来实现不同线程间的同步。
+其中，涉及到的操作有take，put, add。
+本文分析PriorityBlockingQueue的put方法实现。1234567891011121314151617181920212223public void">
   
-  <meta name="description" content="[TOC]
-Markdown简介
-Markdown 是一种轻量级标记语言，它允许人们使用易读易写的纯文本格式编写文档，然后转换成格式丰富的HTML页面。    —— 维基百科
-
-正如您在阅读的这份文档，它使用简单的符号标识不同的标题，将某些文字标记为粗体或者斜体，创建一个链接或一个脚注[^demo]。下面列举了几个高级功能，更多语法请按Ctrl + /查看帮助。 
-代码块12345678910@r">
+  <meta name="description" content="volley源码中，网络请求队列mNetworkQueue被缓存线程和若干个网络线程访问，需要同步。volley采用PriorityBlockingQueue来实现不同线程间的同步。
+其中，涉及到的操作有take，put, add。
+本文分析PriorityBlockingQueue的put方法实现。1234567891011121314151617181920212223public void">
 <meta property="og:type" content="article">
 <meta property="og:title" content="BlockingQueue怎么实现put功能">
 <meta property="og:url" content="http://pleaseyouya.com/2016/01/28/BlockingQueue怎么实现put功能/index.html">
 <meta property="og:site_name" content="Pleaseyouya's Blog">
-<meta property="og:description" content="[TOC]
-Markdown简介
-Markdown 是一种轻量级标记语言，它允许人们使用易读易写的纯文本格式编写文档，然后转换成格式丰富的HTML页面。    —— 维基百科
-
-正如您在阅读的这份文档，它使用简单的符号标识不同的标题，将某些文字标记为粗体或者斜体，创建一个链接或一个脚注[^demo]。下面列举了几个高级功能，更多语法请按Ctrl + /查看帮助。 
-代码块12345678910@r">
-<meta property="og:updated_time" content="2016-01-28T16:19:44.000Z">
+<meta property="og:description" content="volley源码中，网络请求队列mNetworkQueue被缓存线程和若干个网络线程访问，需要同步。volley采用PriorityBlockingQueue来实现不同线程间的同步。
+其中，涉及到的操作有take，put, add。
+本文分析PriorityBlockingQueue的put方法实现。1234567891011121314151617181920212223public void">
+<meta property="og:updated_time" content="2016-01-28T16:53:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="BlockingQueue怎么实现put功能">
-<meta name="twitter:description" content="[TOC]
-Markdown简介
-Markdown 是一种轻量级标记语言，它允许人们使用易读易写的纯文本格式编写文档，然后转换成格式丰富的HTML页面。    —— 维基百科
-
-正如您在阅读的这份文档，它使用简单的符号标识不同的标题，将某些文字标记为粗体或者斜体，创建一个链接或一个脚注[^demo]。下面列举了几个高级功能，更多语法请按Ctrl + /查看帮助。 
-代码块12345678910@r">
+<meta name="twitter:description" content="volley源码中，网络请求队列mNetworkQueue被缓存线程和若干个网络线程访问，需要同步。volley采用PriorityBlockingQueue来实现不同线程间的同步。
+其中，涉及到的操作有take，put, add。
+本文分析PriorityBlockingQueue的put方法实现。1234567891011121314151617181920212223public void">
   
     <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
   
@@ -94,41 +82,13 @@ Markdown 是一种轻量级标记语言，它允许人们使用易读易写的�
   
   <div class="entry">
     
-      <p>[TOC]</p>
-<h2 id="Markdown_u7B80_u4ECB"><a href="#Markdown_u7B80_u4ECB" class="headerlink" title="Markdown简介"></a>Markdown简介</h2><blockquote>
-<p>Markdown 是一种轻量级标记语言，它允许人们使用易读易写的纯文本格式编写文档，然后转换成格式丰富的HTML页面。    —— <a href="https://zh.wikipedia.org/wiki/Markdown" target="_blank" rel="external">维基百科</a></p>
-</blockquote>
-<p>正如您在阅读的这份文档，它使用简单的符号标识不同的标题，将某些文字标记为<strong>粗体</strong>或者<em>斜体</em>，创建一个<a href="http://www.example.com" target="_blank" rel="external">链接</a>或一个脚注[^demo]。下面列举了几个高级功能，更多语法请按<code>Ctrl + /</code>查看帮助。 </p>
-<h3 id="u4EE3_u7801_u5757"><a href="#u4EE3_u7801_u5757" class="headerlink" title="代码块"></a>代码块</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="decorator">@requires_authorization</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">somefunc</span><span class="params">(param1=<span class="string">''</span>, param2=<span class="number">0</span>)</span>:</span></span><br><span class="line">    <span class="string">'''A docstring'''</span></span><br><span class="line">    <span class="keyword">if</span> param1 &gt; param2: <span class="comment"># interesting</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Greater'</span></span><br><span class="line">    <span class="keyword">return</span> (param2 - param1 + <span class="number">1</span>) <span class="keyword">or</span> <span class="keyword">None</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>message = <span class="string">'''interpreter</span><br><span class="line"><span class="prompt">... </span>prompt'''</span></span><br></pre></td></tr></table></figure>
-<h3 id="LaTeX__u516C_u5F0F"><a href="#LaTeX__u516C_u5F0F" class="headerlink" title="LaTeX 公式"></a>LaTeX 公式</h3><p>可以创建行内公式，例如 $\Gamma(n) = (n-1)!\quad\forall n\in\mathbb N$。或者块级公式：</p>
-<p>$$  x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} $$</p>
-<h3 id="u8868_u683C"><a href="#u8868_u683C" class="headerlink" title="表格"></a>表格</h3><table>
-<thead>
-<tr>
-<th style="text-align:left">Item</th>
-<th style="text-align:right">Value</th>
-<th style="text-align:center">Qty</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">Computer</td>
-<td style="text-align:right">1600 USD</td>
-<td style="text-align:center">5</td>
-</tr>
-<tr>
-<td style="text-align:left">Phone</td>
-<td style="text-align:right">12 USD</td>
-<td style="text-align:center">12</td>
-</tr>
-<tr>
-<td style="text-align:left">Pipe</td>
-<td style="text-align:right">1 USD</td>
-<td style="text-align:center">234</td>
-</tr>
-</tbody>
-</table>
-<h3 id="u6D41_u7A0B_u56FE"><a href="#u6D41_u7A0B_u56FE" class="headerlink" title="流程图"></a>流程图</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">st=&#62;start: Start&#10;e=&#62;end&#10;op=&#62;operation: My Operation&#10;cond=&#62;condition: Yes or No?&#10;&#10;st-&#62;op-&#62;cond&#10;cond(yes)-&#62;e&#10;cond(no)-&#62;op</span><br></pre></td></tr></table></figure>
+      <p>volley源码中，网络请求队列mNetworkQueue被缓存线程和若干个网络线程访问，需要同步。<br>volley采用PriorityBlockingQueue来实现不同线程间的同步。</p>
+<p>其中，涉及到的操作有take，put, add。</p>
+<p>本文分析PriorityBlockingQueue的put方法实现。<br><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="literal">void</span> put(E e) &#123;</span><br><span class="line">     offer(e); <span class="comment">// never need to block</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">boolean</span> offer(E e) &#123;</span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    lock<span class="built_in">.</span>lock();</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    <span class="comment">// 分配空间，有可能分配失败。失败情况下重新尝试分配。</span></span><br><span class="line">    <span class="keyword">while</span> ((n = size) &gt;= (cap = (<span class="built_in">array</span> = <span class="built_in">queue</span>)<span class="built_in">.</span>length))</span><br><span class="line">        tryGrow(<span class="built_in">array</span>, cap);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (cmp == <span class="built_in">null</span>)</span><br><span class="line">        siftUpComparable(n, e, <span class="built_in">array</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        siftUpUsingComparat<span class="subst">or</span>(n, e, <span class="built_in">array</span>, cmp);</span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    notEmpty<span class="built_in">.</span>signal();</span><br><span class="line">    </span><br><span class="line">    lock<span class="built_in">.</span>unlock();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>put实际是调用offer方法。<br>首先，获取主锁。</p>
+<p>如果目前数据量已经充满(达到capacity)，重新分配空间。<br>分配空间，有可能分配失败。失败情况下重新尝试分配。</p>
+<p>根据定义的优先级，将数据放到合适的位置。<br>此时，queue肯定非空，释放非空信号。</p>
+<p>最后，释放主锁。</p>
 
     
   </div>
@@ -137,7 +97,7 @@ Markdown 是一种轻量级标记语言，它允许人们使用易读易写的�
       
       
   <div class="tags">
-    <a class="tags-link" href="/tags/java-concurrent/">java|concurrent</a>
+    <a class="tags-link" href="/tags/concurrent/">concurrent</a>, <a class="tags-link" href="/tags/java/">java</a>
   </div>
 
     
