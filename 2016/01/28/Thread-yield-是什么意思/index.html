@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>Thread.yield()是什么意思 | Pleaseyouya&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="pleaseyouya">
+  
+  
+    <meta name="description" content="thread.yield()这个方法是什么意思？yield中文翻译，可以译成”让步”。yield()是否是把执行权让给其他线程的意思？
+不是。yield()表示交出当前的Cpu时间，也就是让Cpu进入可重新分配的状态。而当前线程则由运行状态转入准备状态。此时，当前线程和其他线程一样，都在准备状态(在同一起跑线上)，一起竞争CPU的使用权。
+所以，thread.yield()只是让CPU空闲下来，重">
+  
+  <meta name="description" content="thread.yield()这个方法是什么意思？yield中文翻译，可以译成”让步”。yield()是否是把执行权让给其他线程的意思？
+不是。yield()表示交出当前的Cpu时间，也就是让Cpu进入可重新分配的状态。而当前线程则由运行状态转入准备状态。此时，当前线程和其他线程一样，都在准备状态(在同一起跑线上)，一起竞争CPU的使用权。
+所以，thread.yield()只是让CPU空闲下来，重">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Thread.yield()是什么意思">
+<meta property="og:url" content="http://pleaseyouya.com/2016/01/28/Thread-yield-是什么意思/index.html">
+<meta property="og:site_name" content="Pleaseyouya's Blog">
+<meta property="og:description" content="thread.yield()这个方法是什么意思？yield中文翻译，可以译成”让步”。yield()是否是把执行权让给其他线程的意思？
+不是。yield()表示交出当前的Cpu时间，也就是让Cpu进入可重新分配的状态。而当前线程则由运行状态转入准备状态。此时，当前线程和其他线程一样，都在准备状态(在同一起跑线上)，一起竞争CPU的使用权。
+所以，thread.yield()只是让CPU空闲下来，重">
+<meta property="og:updated_time" content="2016-01-28T14:05:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Thread.yield()是什么意思">
+<meta name="twitter:description" content="thread.yield()这个方法是什么意思？yield中文翻译，可以译成”让步”。yield()是否是把执行权让给其他线程的意思？
+不是。yield()表示交出当前的Cpu时间，也就是让Cpu进入可重新分配的状态。而当前线程则由运行状态转入准备状态。此时，当前线程和其他线程一样，都在准备状态(在同一起跑线上)，一起竞争CPU的使用权。
+所以，thread.yield()只是让CPU空闲下来，重">
+  
+    <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">Pleaseyouya&#39;s Blog</a></h1>
+    <p><a href="/">Step by step</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/01/28/Thread-yield-是什么意思/">
+  <time datetime="2016-01-28T13:27:44.000Z">
+    2016-01-28
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">Thread.yield()是什么意思</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>thread.yield()这个方法是什么意思？<br>yield中文翻译，可以译成”让步”。yield()是否是把执行权让给其他线程的意思？</p>
+<p>不是。yield()表示交出当前的Cpu时间，也就是让Cpu进入可重新分配的状态。而当前线程则由运行状态转入准备状态。<br>此时，当前线程和其他线程一样，都在准备状态(在同一起跑线上)，一起竞争CPU的使用权。</p>
+<p>所以，thread.yield()只是让CPU空闲下来，重新再选一个线程执行。<br>新被选中的线程有可能是其他线程，但也可能，还是当前线程。</p>
+<p>看一个例子。<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public static <span class="class"><span class="keyword">class</span> <span class="title">TestThread</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Thread</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">String</span> tag;</span><br><span class="line">    public <span class="type">TestThread</span>(<span class="type">String</span> tag) &#123;</span><br><span class="line">        <span class="keyword">this</span>.tag = tag;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    public void run() &#123;</span><br><span class="line">        <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">        <span class="keyword">super</span>.run();</span><br><span class="line">        <span class="type">System</span>.out.println(tag + <span class="string">" 1"</span>);</span><br><span class="line">        <span class="type">Thread</span>.<span class="keyword">yield</span>();</span><br><span class="line">        <span class="type">System</span>.out.println(tag + <span class="string">" 2"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>TestThread的实例是一个线程, tag代表了线程名字。<br>线程跑起来，先输出1，然后交出cpu，在抢夺cpu，如果抢到了，输出2.</p>
+<p>测试代码：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;</span><br><span class="line">    TestThread thread1 = <span class="keyword">new</span> TestThread(<span class="string">"thread1"</span>);</span><br><span class="line">    TestThread thread2 = <span class="keyword">new</span> TestThread(<span class="string">"thread2"</span>);</span><br><span class="line">    thread1.start();</span><br><span class="line">    thread2.start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试结果1：</p>
+<blockquote>
+<p>thread1 1<br>thread2 1<br>thread1 2<br>thread2 2</p>
+</blockquote>
+<p>线程1输出1，yield，交出cpu<br>线程2抢到cpu，输出1，然后yield，交出cpu<br>线程1抢到cpu，输出2，线程1结束。<br>最后，cpu给线程2执行，输出2，线程2结束。</p>
+<p>测试结果2：</p>
+<blockquote>
+<p>thread1 1<br>thread2 1<br>thread2 2<br>thread1 2</p>
+</blockquote>
+<p>线程1输出1， yield，交出cpu<br>线程2抢到cpu，输出1，然后yield，交出cpu<br>线程2再次抢到cpu，输出2，线程2结束。<br>最后，cpu给线程1执行，输出2，线程1结束。</p>
+<blockquote>
+<p>thread1 1<br>thread1 2<br>thread2 1<br>thread2 2</p>
+</blockquote>
+<p>线程1输出1，yield，交出cpu<br>线程1再次抢到cpu，输出2，线程1结束。<br>cpu交给线程2，输出1, yield，交出cpu<br>此时只有线程2，必然得到cpu时间，输出2，线程2结束。</p>
+
+    
+  </div>
+  <footer>
+    
+      
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/Java/">Java</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">评论</h1>
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">pleaseyouya</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+  var disqus_shortname = 'pleaseyouya';
+
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  }());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
