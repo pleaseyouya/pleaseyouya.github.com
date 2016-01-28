@@ -24,7 +24,7 @@
 <meta property="og:description" content="thread.yield()这个方法是什么意思？yield中文翻译，可以译成”让步”。yield()是否是把执行权让给其他线程的意思？
 不是。yield()表示交出当前的Cpu时间，也就是让Cpu进入可重新分配的状态。而当前线程则由运行状态转入准备状态。此时，当前线程和其他线程一样，都在准备状态(在同一起跑线上)，一起竞争CPU的使用权。
 所以，thread.yield()只是让CPU空闲下来，重">
-<meta property="og:updated_time" content="2016-01-28T14:05:06.000Z">
+<meta property="og:updated_time" content="2016-01-28T14:13:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Thread.yield()是什么意思">
 <meta name="twitter:description" content="thread.yield()这个方法是什么意思？yield中文翻译，可以译成”让步”。yield()是否是把执行权让给其他线程的意思？
@@ -98,6 +98,7 @@
 <p>thread1 1<br>thread2 1<br>thread2 2<br>thread1 2</p>
 </blockquote>
 <p>线程1输出1， yield，交出cpu<br>线程2抢到cpu，输出1，然后yield，交出cpu<br>线程2再次抢到cpu，输出2，线程2结束。<br>最后，cpu给线程1执行，输出2，线程1结束。</p>
+<p>测试结果3：</p>
 <blockquote>
 <p>thread1 1<br>thread1 2<br>thread2 1<br>thread2 2</p>
 </blockquote>

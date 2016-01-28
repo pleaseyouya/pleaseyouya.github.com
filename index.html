@@ -93,6 +93,7 @@
 <p>thread1 1<br>thread2 1<br>thread2 2<br>thread1 2</p>
 </blockquote>
 <p>线程1输出1， yield，交出cpu<br>线程2抢到cpu，输出1，然后yield，交出cpu<br>线程2再次抢到cpu，输出2，线程2结束。<br>最后，cpu给线程1执行，输出2，线程1结束。</p>
+<p>测试结果3：</p>
 <blockquote>
 <p>thread1 1<br>thread1 2<br>thread2 1<br>thread2 2</p>
 </blockquote>

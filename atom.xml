@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-28T14:05:06.000Z</updated>
+  <updated>2016-01-28T14:13:57.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://pleaseyouya.com/2016/01/28/Thread-yield-%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D/"/>
     <id>http://pleaseyouya.com/2016/01/28/Thread-yield-是什么意思/</id>
     <published>2016-01-28T13:27:44.000Z</published>
-    <updated>2016-01-28T14:05:06.000Z</updated>
+    <updated>2016-01-28T14:13:57.000Z</updated>
     <content type="html"><![CDATA[<p>thread.yield()这个方法是什么意思？<br>yield中文翻译，可以译成”让步”。yield()是否是把执行权让给其他线程的意思？</p>
 <p>不是。yield()表示交出当前的Cpu时间，也就是让Cpu进入可重新分配的状态。而当前线程则由运行状态转入准备状态。<br>此时，当前线程和其他线程一样，都在准备状态(在同一起跑线上)，一起竞争CPU的使用权。</p>
 <p>所以，thread.yield()只是让CPU空闲下来，重新再选一个线程执行。<br>新被选中的线程有可能是其他线程，但也可能，还是当前线程。</p>
@@ -36,6 +36,7 @@
 <p>thread1 1<br>thread2 1<br>thread2 2<br>thread1 2</p>
 </blockquote>
 <p>线程1输出1， yield，交出cpu<br>线程2抢到cpu，输出1，然后yield，交出cpu<br>线程2再次抢到cpu，输出2，线程2结束。<br>最后，cpu给线程1执行，输出2，线程1结束。</p>
+<p>测试结果3：</p>
 <blockquote>
 <p>thread1 1<br>thread1 2<br>thread2 1<br>thread2 2</p>
 </blockquote>
