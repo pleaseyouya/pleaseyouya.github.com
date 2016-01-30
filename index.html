@@ -79,7 +79,7 @@
     
       <p>volley源码中，网络请求队列mNetworkQueue被缓存线程和若干个网络线程访问，需要同步。<br>volley采用PriorityBlockingQueue来实现不同线程间的同步。</p>
 <p>其中，涉及到的操作有take，put, add。</p>
-<p>本文分析PriorityBlockingQueue的put方法实现。<br>
+<p>本文分析PriorityBlockingQueue的put方法实现。</p>
     
   </div>
   <footer class="end-sep">
