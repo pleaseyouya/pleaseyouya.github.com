@@ -308,8 +308,8 @@
   
   <entry>
     <title><![CDATA[onTouch和onTouchEvent的传递过程]]></title>
-    <link href="http://pleaseyouya.com/2016/01/20/onTouch%E5%92%8ConTouchEvent%E7%9A%84%E4%BC%A0%E9%80%92%E8%BF%87%E7%A8%8B/"/>
-    <id>http://pleaseyouya.com/2016/01/20/onTouch和onTouchEvent的传递过程/</id>
+    <link href="http://pleaseyouya.com/2016/01/20/ontouch%E5%92%8ConTouchEvent%E7%9A%84%E4%BC%A0%E9%80%92%E8%BF%87%E7%A8%8B/"/>
+    <id>http://pleaseyouya.com/2016/01/20/ontouch和onTouchEvent的传递过程/</id>
     <published>2016-01-19T16:36:25.000Z</published>
     <updated>2016-01-30T09:47:09.000Z</updated>
     <content type="html"><![CDATA[<p>ontouch和onTouchEvent的传递过程是自上而下的。<br>这里的自上而下，是指从父view开始，接着传递给子view。其中传递过程牵涉到三个重要的方法，分别是onInterceptTouchEvent，onTouch，onTouchEvent。</p>
