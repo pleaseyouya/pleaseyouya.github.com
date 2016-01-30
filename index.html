@@ -62,6 +62,47 @@
   <header>
     
       <div class="icon"></div>
+      <a href="/2016/01/30/BlockingQueue怎么实现take功能/">
+  <time datetime="2016-01-30T14:38:14.000Z">
+    2016-01-30
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/01/30/BlockingQueue怎么实现take功能/">谈谈BlockingQueue的take, poll</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。</p>
+<p>take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。</p>
+<p>poll有两个版本：</p>
+<ol>
+<li>poll()<br>不会发生阻塞。从队列中取出第一个数据，如果队列为空，直接返回null。</li>
+<li>poll(long timeout, TimeUnit unit)<br>可能发生阻塞。从队列中取出第一个数据。如果队列为空，线程将被阻塞，如果在timeout之前被唤醒，则可以继续尝试。如果timeout，则返回null。</li>
+</ol>
+<p>先来说take()。<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public E take() throws <span class="type">InterruptedException</span> &#123;</span><br><span class="line">    final <span class="type">ReentrantLock</span> lock = this.lock;</span><br><span class="line">    lock.lockInterruptibly();</span><br><span class="line">    E <span class="literal">result</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> ( (<span class="literal">result</span> = dequeue()) == null)</span><br><span class="line">            notEmpty.await();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">result</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
       <a href="/2016/01/28/BlockingQueue怎么实现put功能/">
   <time datetime="2016-01-28T15:50:18.000Z">
     2016-01-28
@@ -386,44 +427,6 @@
       
         <div class="alignleft">
           <a href="/2016/01/21/ScrollView解决超出屏幕高度的layout/#more" class="more-link">阅读全文</a>
-        </div>
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/01/20/ontouch和onTouchEvent的传递过程/">
-  <time datetime="2016-01-19T16:36:25.000Z">
-    2016-01-20
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/01/20/ontouch和onTouchEvent的传递过程/">onTouch和onTouchEvent的传递过程</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <p>ontouch和onTouchEvent的传递过程是自上而下的。<br>这里的自上而下，是指从父view开始，接着传递给子view。其中传递过程牵涉到三个重要的方法，分别是onInterceptTouchEvent，onTouch，onTouchEvent。</p>
-<p>只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent，但textView则没有改方法。</p>
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-        <div class="alignleft">
-          <a href="/2016/01/20/ontouch和onTouchEvent的传递过程/#more" class="more-link">阅读全文</a>
         </div>
       
       

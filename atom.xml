@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-30T09:34:08.000Z</updated>
+  <updated>2016-01-30T17:21:24.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -13,6 +13,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[谈谈BlockingQueue的take, poll]]></title>
+    <link href="http://pleaseyouya.com/2016/01/30/BlockingQueue%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0take%E5%8A%9F%E8%83%BD/"/>
+    <id>http://pleaseyouya.com/2016/01/30/BlockingQueue怎么实现take功能/</id>
+    <published>2016-01-30T14:38:14.000Z</published>
+    <updated>2016-01-30T17:21:24.000Z</updated>
+    <content type="html"><![CDATA[<p>本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。</p>
+<p>take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。</p>
+<p>poll有两个版本：</p>
+<ol>
+<li>poll()<br>不会发生阻塞。从队列中取出第一个数据，如果队列为空，直接返回null。</li>
+<li>poll(long timeout, TimeUnit unit)<br>可能发生阻塞。从队列中取出第一个数据。如果队列为空，线程将被阻塞，如果在timeout之前被唤醒，则可以继续尝试。如果timeout，则返回null。</li>
+</ol>
+<p>先来说take()。<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public E take() throws <span class="type">InterruptedException</span> &#123;</span><br><span class="line">    final <span class="type">ReentrantLock</span> lock = this.lock;</span><br><span class="line">    lock.lockInterruptibly();</span><br><span class="line">    E <span class="literal">result</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> ( (<span class="literal">result</span> = dequeue()) == null)</span><br><span class="line">            notEmpty.await();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">result</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。</p>
+<p>take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。</p>
+<p>poll有两个版本：</p>
+<ol>
+<li>poll()<b]]>
+    </summary>
+    
+      <category term="java" scheme="http://pleaseyouya.com/tags/java/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[BlockingQueue怎么实现put功能]]></title>

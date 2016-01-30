@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>谈谈BlockingQueue的take, poll | Pleaseyouya&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="pleaseyouya">
+  
+  
+    <meta name="description" content="本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。
+take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。
+poll有两个版本：
+
+poll()不会发生阻塞。从队列中取出第一个数据，如果队列为空，直接返回null。
+poll(long timeout, TimeUnit unit)可能发生阻塞。从队列中取出第一个数据。如果队">
+  
+  <meta name="description" content="本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。
+take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。
+poll有两个版本：
+
+poll()不会发生阻塞。从队列中取出第一个数据，如果队列为空，直接返回null。
+poll(long timeout, TimeUnit unit)可能发生阻塞。从队列中取出第一个数据。如果队">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谈谈BlockingQueue的take, poll">
+<meta property="og:url" content="http://pleaseyouya.com/2016/01/30/BlockingQueue怎么实现take功能/index.html">
+<meta property="og:site_name" content="Pleaseyouya's Blog">
+<meta property="og:description" content="本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。
+take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。
+poll有两个版本：
+
+poll()不会发生阻塞。从队列中取出第一个数据，如果队列为空，直接返回null。
+poll(long timeout, TimeUnit unit)可能发生阻塞。从队列中取出第一个数据。如果队">
+<meta property="og:updated_time" content="2016-01-30T17:21:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="谈谈BlockingQueue的take, poll">
+<meta name="twitter:description" content="本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。
+take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。
+poll有两个版本：
+
+poll()不会发生阻塞。从队列中取出第一个数据，如果队列为空，直接返回null。
+poll(long timeout, TimeUnit unit)可能发生阻塞。从队列中取出第一个数据。如果队">
+  
+    <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/favicon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">Pleaseyouya&#39;s Blog</a></h1>
+    <p><a href="/">Step by step</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/01/30/BlockingQueue怎么实现take功能/">
+  <time datetime="2016-01-30T14:38:14.000Z">
+    2016-01-30
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">谈谈BlockingQueue的take, poll</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。</p>
+<p>take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。</p>
+<p>poll有两个版本：</p>
+<ol>
+<li>poll()<br>不会发生阻塞。从队列中取出第一个数据，如果队列为空，直接返回null。</li>
+<li>poll(long timeout, TimeUnit unit)<br>可能发生阻塞。从队列中取出第一个数据。如果队列为空，线程将被阻塞，如果在timeout之前被唤醒，则可以继续尝试。如果timeout，则返回null。</li>
+</ol>
+<p>先来说take()。<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public E take() throws <span class="type">InterruptedException</span> &#123;</span><br><span class="line">    final <span class="type">ReentrantLock</span> lock = this.lock;</span><br><span class="line">    lock.lockInterruptibly();</span><br><span class="line">    E <span class="literal">result</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> ( (<span class="literal">result</span> = dequeue()) == null)</span><br><span class="line">            notEmpty.await();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">result</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+    
+  </div>
+  <footer>
+    
+      
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/java/">java</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">评论</h1>
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">pleaseyouya</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+  var disqus_shortname = 'pleaseyouya';
+
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  }());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
