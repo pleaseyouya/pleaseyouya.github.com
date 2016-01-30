@@ -11,29 +11,21 @@
   
   
     <meta name="description" content="在layout布局文件中可以看到这个属性1xml:tools = &quot;http://schemas.android.com/tools&quot;
-这个属性是干什么的呢？
-开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。
-这时候，tools就派上用场了。">
+这个属性是干什么的呢？">
   
   <meta name="description" content="在layout布局文件中可以看到这个属性1xml:tools = &quot;http://schemas.android.com/tools&quot;
-这个属性是干什么的呢？
-开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。
-这时候，tools就派上用场了。">
+这个属性是干什么的呢？">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浅谈xml:tools">
 <meta property="og:url" content="http://pleaseyouya.com/2016/01/21/浅谈xml-tools/index.html">
 <meta property="og:site_name" content="Pleaseyouya's Blog">
 <meta property="og:description" content="在layout布局文件中可以看到这个属性1xml:tools = &quot;http://schemas.android.com/tools&quot;
-这个属性是干什么的呢？
-开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。
-这时候，tools就派上用场了。">
-<meta property="og:updated_time" content="2016-01-30T09:30:38.000Z">
+这个属性是干什么的呢？">
+<meta property="og:updated_time" content="2016-01-30T09:45:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈xml:tools">
 <meta name="twitter:description" content="在layout布局文件中可以看到这个属性1xml:tools = &quot;http://schemas.android.com/tools&quot;
-这个属性是干什么的呢？
-开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。
-这时候，tools就派上用场了。">
+这个属性是干什么的呢？">
   
     <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
   
@@ -88,8 +80,9 @@
     
       <p>在layout布局文件中可以看到这个属性<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">xm</span><span class="variable">l:tools</span> = <span class="string">"http://schemas.android.com/tools"</span></span><br></pre></td></tr></table></figure></p>
 <p>这个属性是干什么的呢？</p>
+<a id="more"></a>
 <p>开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。<br>然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。</p>
-<p>这时候，tools就派上用场了。<br><a id="more"></a><br>tools可以告诉android studio，tools命名空间下的属性只在预览效果时使用，在实际运行时，这些属性都会自动被忽略。</p>
+<p>这时候，tools就派上用场了。<br>tools可以告诉android studio，tools命名空间下的属性只在预览效果时使用，在实际运行时，这些属性都会自动被忽略。</p>
 <p>比如：<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;TextView</span><br><span class="line">    android:layout_width = <span class="string">"wrap_content"</span></span><br><span class="line">    android:layout_height = <span class="string">"wrap_content"</span></span><br><span class="line">    tools:<span class="type">text</span> = <span class="string">"Hello World"</span></span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure></p>
 <p>硬编码的”Hello World”，在app运行时会被忽略的。</p>
 
