@@ -288,16 +288,17 @@
   </entry>
   
   <entry>
-    <title><![CDATA[ScrollView解决超出屏幕高度的layou]]></title>
-    <link href="http://pleaseyouya.com/2016/01/21/ScrollView%E8%A7%A3%E5%86%B3%E8%B6%85%E5%87%BA%E5%B1%8F%E5%B9%95%E9%AB%98%E5%BA%A6%E7%9A%84layou/"/>
-    <id>http://pleaseyouya.com/2016/01/21/ScrollView解决超出屏幕高度的layou/</id>
+    <title><![CDATA[ScrollView解决超出屏幕高度的layout]]></title>
+    <link href="http://pleaseyouya.com/2016/01/21/ScrollView%E8%A7%A3%E5%86%B3%E8%B6%85%E5%87%BA%E5%B1%8F%E5%B9%95%E9%AB%98%E5%BA%A6%E7%9A%84layout/"/>
+    <id>http://pleaseyouya.com/2016/01/21/ScrollView解决超出屏幕高度的layout/</id>
     <published>2016-01-20T16:22:53.000Z</published>
-    <updated>2016-01-30T09:29:47.000Z</updated>
-    <content type="html"><![CDATA[<p>做一个个人中心页面的时候，涉及到的布局超出了屏幕高度(布局包含了诸如收藏，钱包，优惠，登陆，注册等等)，然后发现超出屏幕的部分显示不出来，并且页面无法滑动。<br><a id="more"></a></p>
+    <updated>2016-01-30T09:46:26.000Z</updated>
+    <content type="html"><![CDATA[<p>做一个个人中心页面的时候，涉及到的布局超出了屏幕高度(布局包含了诸如收藏，钱包，优惠，登陆，注册等等)，然后发现超出屏幕的部分显示不出来，并且页面无法滑动。</p>
+<a id="more"></a>
 <p>解决办法是，对于太长的布局，需要将其包在一个ScrollView当中。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">ScrollView</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">xmlns:app</span>=<span class="value">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    <span class="attribute">xmlns:tools</span>=<span class="value">"http://schemas.android.com/tools"</span></span><br><span class="line">    <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:orientation</span>=<span class="value">"vertical"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 超长布局 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 想多长都行 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">ScrollView</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>做一个个人中心页面的时候，涉及到的布局超出了屏幕高度(布局包含了诸如收藏，钱包，优惠，登陆，注册等等)，然后发现超出屏幕的部分显示不出来，并且页面无法滑动。<br>]]>
+    <![CDATA[<p>做一个个人中心页面的时候，涉及到的布局超出了屏幕高度(布局包含了诸如收藏，钱包，优惠，登陆，注册等等)，然后发现超出屏幕的部分显示不出来，并且页面无法滑动。</p>]]>
     
     </summary>
     
@@ -306,13 +307,14 @@
   </entry>
   
   <entry>
-    <title><![CDATA[ontouch和onTouchEvent的传递过程]]></title>
-    <link href="http://pleaseyouya.com/2016/01/20/ontouch%E5%92%8ConTouchEvent%E7%9A%84%E4%BC%A0%E9%80%92%E8%BF%87%E7%A8%8B/"/>
-    <id>http://pleaseyouya.com/2016/01/20/ontouch和onTouchEvent的传递过程/</id>
+    <title><![CDATA[onTouch和onTouchEvent的传递过程]]></title>
+    <link href="http://pleaseyouya.com/2016/01/20/onTouch%E5%92%8ConTouchEvent%E7%9A%84%E4%BC%A0%E9%80%92%E8%BF%87%E7%A8%8B/"/>
+    <id>http://pleaseyouya.com/2016/01/20/onTouch和onTouchEvent的传递过程/</id>
     <published>2016-01-19T16:36:25.000Z</published>
-    <updated>2016-01-30T09:29:29.000Z</updated>
+    <updated>2016-01-30T09:47:09.000Z</updated>
     <content type="html"><![CDATA[<p>ontouch和onTouchEvent的传递过程是自上而下的。<br>这里的自上而下，是指从父view开始，接着传递给子view。其中传递过程牵涉到三个重要的方法，分别是onInterceptTouchEvent，onTouch，onTouchEvent。</p>
-<p>只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent，但textView则没有改方法。<br><a id="more"></a></p>
+<p>只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent，但textView则没有改方法。</p>
+<a id="more"></a>
 <p>对每一个view来说，如果它可以执行onTouch或者onTouchEvent，那么，优先执行onTouch。</p>
 <p>为了说明传递的过程，举个简单的例子。A是父view，B是A的子view，而C是B的子view。</p>
 <blockquote>
@@ -329,7 +331,7 @@
 ]]></content>
     <summary type="html">
     <![CDATA[<p>ontouch和onTouchEvent的传递过程是自上而下的。<br>这里的自上而下，是指从父view开始，接着传递给子view。其中传递过程牵涉到三个重要的方法，分别是onInterceptTouchEvent，onTouch，onTouchEvent。</p>
-<p>只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent，但textView则没有改方法。<br>]]>
+<p>只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent，但textView则没有改方法。</p>]]>
     
     </summary>
     
@@ -340,9 +342,10 @@
     <link href="http://pleaseyouya.com/2016/01/16/listview-setDivider%E6%97%A0%E6%95%88/"/>
     <id>http://pleaseyouya.com/2016/01/16/listview-setDivider无效/</id>
     <published>2016-01-16T13:30:39.000Z</published>
-    <updated>2016-01-30T09:28:43.000Z</updated>
-    <content type="html"><![CDATA[<p>在程序里面设置listview的divider的时候，发现没有效果。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setDivider</span><span class="params">(Drawable divider)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (divider != <span class="keyword">null</span>) &#123;</span><br><span class="line">        mDividerHeight = divider.getIntrinsicHeight();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mDividerHeight = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//....</span></span><br></pre></td></tr></table></figure></p>
+    <updated>2016-01-30T09:47:49.000Z</updated>
+    <content type="html"><![CDATA[<p>在程序里面设置listview的divider的时候，发现没有效果。</p>
 <a id="more"></a>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setDivider</span><span class="params">(Drawable divider)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (divider != <span class="keyword">null</span>) &#123;</span><br><span class="line">        mDividerHeight = divider.getIntrinsicHeight();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mDividerHeight = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//....</span></span><br></pre></td></tr></table></figure>
 <p>再看下getIntrinsicHeight()<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getIntrinsicHeight</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>所以，setDivider会导致mDividerHeight变成0或者-1，从而无法显示divider。所以，必须在setDivider后面设置mDividerHeight。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">listView.setDivider(<span class="keyword">new</span> ColorDrawable(<span class="number">0xffd4d5d6</span>));</span><br><span class="line">listView.setDividerHeight(<span class="number">2</span>);</span><br></pre></td></tr></table></figure></p>
 <blockquote>
@@ -350,7 +353,7 @@
 </blockquote>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>在程序里面设置listview的divider的时候，发现没有效果。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setDivider</span><span class="params">(Drawable divider)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (divider != <span class="keyword">null</span>) &#123;</span><br><span class="line">        mDividerHeight = divider.getIntrinsicHeight();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mDividerHeight = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//....</span></span><br></pre></td></tr></table></figure></p>]]>
+    <![CDATA[<p>在程序里面设置listview的divider的时候，发现没有效果。</p>]]>
     
     </summary>
     
@@ -363,9 +366,10 @@
     <link href="http://pleaseyouya.com/2016/01/16/listview%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/"/>
     <id>http://pleaseyouya.com/2016/01/16/listview常见使用场景/</id>
     <published>2016-01-16T09:59:49.000Z</published>
-    <updated>2016-01-30T09:28:56.000Z</updated>
-    <content type="html"><![CDATA[<p>场景1、滑动到底部或者顶部时，去掉底部或顶部产生的阴影。<br><figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//去掉滑动到底部时或者顶部时产生的阴影divider</span></span><br><span class="line">listView.setOverScrollMode<span class="comment">(View.OVER_SCROLL_NEVER)</span>;</span><br></pre></td></tr></table></figure></p>
+    <updated>2016-01-30T09:48:25.000Z</updated>
+    <content type="html"><![CDATA[<p>场景1、滑动到底部或者顶部时，去掉底部或顶部产生的阴影。</p>
 <a id="more"></a>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//去掉滑动到底部时或者顶部时产生的阴影divider</span></span><br><span class="line">listView.setOverScrollMode<span class="comment">(View.OVER_SCROLL_NEVER)</span>;</span><br></pre></td></tr></table></figure>
 <p>场景2、让listview滑动到底部<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">listView.post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        listView.smoothScrollToPosition(listView.getCount()-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
 <p>还有另一种方式, listview.setSelection(listview.getCount()-1)，但是这种方式没有滑动的动画效果。</p>
 <p>场景3、让listview向下滑动一个item<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">listView.post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        listView.smoothScrollByOffset(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
@@ -376,7 +380,7 @@
 <p>这样onItemClick可以正常执行，并且button当点击时同样可以获取焦点。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>场景1、滑动到底部或者顶部时，去掉底部或顶部产生的阴影。<br><figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//去掉滑动到底部时或者顶部时产生的阴影divider</span></span><br><span class="line">listView.setOverScrollMode<span class="comment">(View.OVER_SCROLL_NEVER)</span>;</span><br></pre></td></tr></table></figure></p>]]>
+    <![CDATA[<p>场景1、滑动到底部或者顶部时，去掉底部或顶部产生的阴影。</p>]]>
     
     </summary>
     
@@ -389,8 +393,9 @@
     <link href="http://pleaseyouya.com/2016/01/16/%E6%B5%85%E8%B0%88android-sharedpreferences-mode/"/>
     <id>http://pleaseyouya.com/2016/01/16/浅谈android-sharedpreferences-mode/</id>
     <published>2016-01-16T06:25:18.000Z</published>
-    <updated>2016-01-30T09:30:21.000Z</updated>
-    <content type="html"><![CDATA[<p>目标：实现两个进程间通信，通过sharedPreferences。<br><a id="more"></a></p>
+    <updated>2016-01-30T09:48:42.000Z</updated>
+    <content type="html"><![CDATA[<p>目标：实现两个进程间通信，通过sharedPreferences。</p>
+<a id="more"></a>
 <ol>
 <li><h3 id="u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u5B58_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u4E2D_u5374_u53D6_u4E0D_u5230_u6570_u636E_uFF1F"><a href="#u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u5B58_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u4E2D_u5374_u53D6_u4E0D_u5230_u6570_u636E_uFF1F" class="headerlink" title="问题：在进程A中存数据，但是在进程B中却取不到数据？"></a>问题：在进程A中存数据，但是在进程B中却取不到数据？</h3><p><em>发现问题</em>：进程A在getSharedPreferences的模式是<em>MODE_PRIVATE</em>，此时进程B肯定读不到。<br><em>正确的做法</em>：进程A在getSharedPreferences的模式是MODE_WORLD_READABLE</p>
 <figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">getSharedPreferences(<span class="string">"pref"</span>, <span class="type">Context</span>.<span class="type">MODE_WORLD_READABLE</span>).edit<span class="literal">()</span></span><br><span class="line">                        .putString</span><br><span class="line">                        (<span class="string">"key"</span>,</span><br><span class="line">                        <span class="string">"world readable"</span>).commit<span class="literal">()</span>;</span><br></pre></td></tr></table></figure>
@@ -404,7 +409,7 @@
 <p>性能比如下好：<br><figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sharedpreferences.edit<span class="literal">()</span>.putString(<span class="string">"key1"</span>, <span class="string">"data1"</span>).commit<span class="literal">()</span>;</span><br><span class="line">sharedpreferences.edit<span class="literal">()</span>.putString(<span class="string">"key2"</span>, <span class="string">"data2"</span>).commit<span class="literal">()</span>;</span><br></pre></td></tr></table></figure></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>目标：实现两个进程间通信，通过sharedPreferences。<br>]]>
+    <![CDATA[<p>目标：实现两个进程间通信，通过sharedPreferences。</p>]]>
     
     </summary>
     
@@ -435,8 +440,10 @@
     <link href="http://pleaseyouya.com/2016/01/12/%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E5%88%B0github/"/>
     <id>http://pleaseyouya.com/2016/01/12/添加一个本地项目到github/</id>
     <published>2016-01-12T15:49:36.000Z</published>
-    <updated>2016-01-30T09:31:14.000Z</updated>
-    <content type="html"><![CDATA[<p>如何把一个项目推送到github上面呢？可以让git的版本管理帮你完成这件事。<br><a id="more"></a><br>既然git要完成推送本地项目到github的任务，它需要管理本地的项目，同时需要知道推送到github上哪一个地方。</p>
+    <updated>2016-01-30T09:51:00.000Z</updated>
+    <content type="html"><![CDATA[<p>如何把一个项目推送到github上面呢？可以让git的版本管理帮你完成这件事。</p>
+<a id="more"></a>
+<p>既然git要完成推送本地项目到github的任务，它需要管理本地的项目，同时需要知道推送到github上哪一个地方。</p>
 <pre><code>1、git需要管理本地项目，即把该项目转化成一个git仓库。
 </code></pre><p>如何把一个项目转化成一个仓库呢？做法是，在项目本目录下，执行git init。</p>
 <figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">git</span> init</span><br></pre></td></tr></table></figure>
@@ -451,7 +458,7 @@
 </code></pre><p>最后，将本地的项目推送到github，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">git</span> <span class="keyword">push </span>-u origin master</span><br></pre></td></tr></table></figure></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>如何把一个项目推送到github上面呢？可以让git的版本管理帮你完成这件事。<br>]]>
+    <![CDATA[<p>如何把一个项目推送到github上面呢？可以让git的版本管理帮你完成这件事。</p>]]>
     
     </summary>
     

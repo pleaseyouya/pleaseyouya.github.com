@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
   
-  <title>ontouch和onTouchEvent的传递过程 | Pleaseyouya&#39;s Blog</title>
+  <title>onTouch和onTouchEvent的传递过程 | Pleaseyouya&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   
     <meta name="author" content="pleaseyouya">
@@ -16,14 +16,14 @@
   <meta name="description" content="ontouch和onTouchEvent的传递过程是自上而下的。这里的自上而下，是指从父view开始，接着传递给子view。其中传递过程牵涉到三个重要的方法，分别是onInterceptTouchEvent，onTouch，onTouchEvent。
 只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ontouch和onTouchEvent的传递过程">
-<meta property="og:url" content="http://pleaseyouya.com/2016/01/20/ontouch和onTouchEvent的传递过程/index.html">
+<meta property="og:title" content="onTouch和onTouchEvent的传递过程">
+<meta property="og:url" content="http://pleaseyouya.com/2016/01/20/onTouch和onTouchEvent的传递过程/index.html">
 <meta property="og:site_name" content="Pleaseyouya's Blog">
 <meta property="og:description" content="ontouch和onTouchEvent的传递过程是自上而下的。这里的自上而下，是指从父view开始，接着传递给子view。其中传递过程牵涉到三个重要的方法，分别是onInterceptTouchEvent，onTouch，onTouchEvent。
 只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent">
-<meta property="og:updated_time" content="2016-01-30T09:29:29.000Z">
+<meta property="og:updated_time" content="2016-01-30T09:47:09.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ontouch和onTouchEvent的传递过程">
+<meta name="twitter:title" content="onTouch和onTouchEvent的传递过程">
 <meta name="twitter:description" content="ontouch和onTouchEvent的传递过程是自上而下的。这里的自上而下，是指从父view开始，接着传递给子view。其中传递过程牵涉到三个重要的方法，分别是onInterceptTouchEvent，onTouch，onTouchEvent。
 只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent">
   
@@ -63,7 +63,7 @@
   <header>
     
       <div class="icon"></div>
-      <a href="/2016/01/20/ontouch和onTouchEvent的传递过程/">
+      <a href="/2016/01/20/onTouch和onTouchEvent的传递过程/">
   <time datetime="2016-01-19T16:36:25.000Z">
     2016-01-20
   </time>
@@ -71,7 +71,7 @@
     
     
   
-    <h1 class="title">ontouch和onTouchEvent的传递过程</h1>
+    <h1 class="title">onTouch和onTouchEvent的传递过程</h1>
   
 
   </header>
@@ -79,7 +79,8 @@
   <div class="entry">
     
       <p>ontouch和onTouchEvent的传递过程是自上而下的。<br>这里的自上而下，是指从父view开始，接着传递给子view。其中传递过程牵涉到三个重要的方法，分别是onInterceptTouchEvent，onTouch，onTouchEvent。</p>
-<p>只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent，但textView则没有改方法。<br><a id="more"></a></p>
+<p>只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent，但textView则没有改方法。</p>
+<a id="more"></a>
 <p>对每一个view来说，如果它可以执行onTouch或者onTouchEvent，那么，优先执行onTouch。</p>
 <p>为了说明传递的过程，举个简单的例子。A是父view，B是A的子view，而C是B的子view。</p>
 <blockquote>

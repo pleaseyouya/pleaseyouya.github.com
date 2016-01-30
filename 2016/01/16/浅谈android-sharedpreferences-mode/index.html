@@ -18,7 +18,7 @@
 <meta property="og:url" content="http://pleaseyouya.com/2016/01/16/浅谈android-sharedpreferences-mode/index.html">
 <meta property="og:site_name" content="Pleaseyouya's Blog">
 <meta property="og:description" content="目标：实现两个进程间通信，通过sharedPreferences。">
-<meta property="og:updated_time" content="2016-01-30T09:30:21.000Z">
+<meta property="og:updated_time" content="2016-01-30T09:48:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈android sharedpreferences mode">
 <meta name="twitter:description" content="目标：实现两个进程间通信，通过sharedPreferences。">
@@ -74,7 +74,8 @@
   
   <div class="entry">
     
-      <p>目标：实现两个进程间通信，通过sharedPreferences。<br><a id="more"></a></p>
+      <p>目标：实现两个进程间通信，通过sharedPreferences。</p>
+<a id="more"></a>
 <ol>
 <li><h3 id="u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u5B58_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u4E2D_u5374_u53D6_u4E0D_u5230_u6570_u636E_uFF1F"><a href="#u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u5B58_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u4E2D_u5374_u53D6_u4E0D_u5230_u6570_u636E_uFF1F" class="headerlink" title="问题：在进程A中存数据，但是在进程B中却取不到数据？"></a>问题：在进程A中存数据，但是在进程B中却取不到数据？</h3><p><em>发现问题</em>：进程A在getSharedPreferences的模式是<em>MODE_PRIVATE</em>，此时进程B肯定读不到。<br><em>正确的做法</em>：进程A在getSharedPreferences的模式是MODE_WORLD_READABLE</p>
 <figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">getSharedPreferences(<span class="string">"pref"</span>, <span class="type">Context</span>.<span class="type">MODE_WORLD_READABLE</span>).edit<span class="literal">()</span></span><br><span class="line">                        .putString</span><br><span class="line">                        (<span class="string">"key"</span>,</span><br><span class="line">                        <span class="string">"world readable"</span>).commit<span class="literal">()</span>;</span><br></pre></td></tr></table></figure>
