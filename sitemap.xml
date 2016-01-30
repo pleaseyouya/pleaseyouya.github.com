@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://pleaseyouya.com/2016/01/28/Thread-yield-%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D/</loc>
+    <lastmod>2016-01-30T09:37:55.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://pleaseyouya.com/2016/01/28/BlockingQueue%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0put%E5%8A%9F%E8%83%BD/</loc>
     <lastmod>2016-01-30T09:34:08.000Z</lastmod>
   </url>
@@ -39,11 +44,6 @@
   <url>
     <loc>http://pleaseyouya.com/2016/01/16/%E6%B5%85%E8%B0%88android-sharedpreferences-mode/</loc>
     <lastmod>2016-01-30T09:30:21.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://pleaseyouya.com/2016/01/28/Thread-yield-%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D/</loc>
-    <lastmod>2016-01-30T09:30:03.000Z</lastmod>
   </url>
   
   <url>
