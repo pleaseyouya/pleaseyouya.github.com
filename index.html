@@ -79,16 +79,15 @@
     
       <p>volley源码中，网络请求队列mNetworkQueue被缓存线程和若干个网络线程访问，需要同步。<br>volley采用PriorityBlockingQueue来实现不同线程间的同步。</p>
 <p>其中，涉及到的操作有take，put, add。</p>
-<p>本文分析PriorityBlockingQueue的put方法实现。<br><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="literal">void</span> put(E e) &#123;</span><br><span class="line">     offer(e); <span class="comment">// never need to block</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">boolean</span> offer(E e) &#123;</span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    lock<span class="built_in">.</span>lock();</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    <span class="comment">// 分配空间，有可能分配失败。失败情况下重新尝试分配。</span></span><br><span class="line">    <span class="keyword">while</span> ((n = size) &gt;= (cap = (<span class="built_in">array</span> = <span class="built_in">queue</span>)<span class="built_in">.</span>length))</span><br><span class="line">        tryGrow(<span class="built_in">array</span>, cap);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (cmp == <span class="built_in">null</span>)</span><br><span class="line">        siftUpComparable(n, e, <span class="built_in">array</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        siftUpUsingComparat<span class="subst">or</span>(n, e, <span class="built_in">array</span>, cmp);</span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    notEmpty<span class="built_in">.</span>signal();</span><br><span class="line">    </span><br><span class="line">    lock<span class="built_in">.</span>unlock();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>put实际是调用offer方法。<br>首先，获取主锁。</p>
-<p>如果目前数据量已经充满(达到capacity)，重新分配空间。<br>分配空间，有可能分配失败。失败情况下重新尝试分配。</p>
-<p>根据定义的优先级，将数据放到合适的位置。<br>此时，queue肯定非空，释放非空信号。</p>
-<p>最后，释放主锁。</p>
-
+<p>本文分析PriorityBlockingQueue的put方法实现。<br>
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/28/BlockingQueue怎么实现put功能/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     
@@ -119,30 +118,15 @@
     
       <p>thread.yield()这个方法是什么意思？<br>yield中文翻译，可以译成”让步”。yield()是否是把执行权让给其他线程的意思？</p>
 <p>不是。yield()表示交出当前的Cpu时间，也就是让Cpu进入可重新分配的状态。而当前线程则由运行状态转入准备状态。<br>此时，当前线程和其他线程一样，都在准备状态(在同一起跑线上)，一起竞争CPU的使用权。</p>
-<p>所以，thread.yield()只是让CPU空闲下来，重新再选一个线程执行。<br>新被选中的线程有可能是其他线程，但也可能，还是当前线程。</p>
-<p>看一个例子。<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public static <span class="class"><span class="keyword">class</span> <span class="title">TestThread</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Thread</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">String</span> tag;</span><br><span class="line">    public <span class="type">TestThread</span>(<span class="type">String</span> tag) &#123;</span><br><span class="line">        <span class="keyword">this</span>.tag = tag;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    public void run() &#123;</span><br><span class="line">        <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">        <span class="keyword">super</span>.run();</span><br><span class="line">        <span class="type">System</span>.out.println(tag + <span class="string">" 1"</span>);</span><br><span class="line">        <span class="type">Thread</span>.<span class="keyword">yield</span>();</span><br><span class="line">        <span class="type">System</span>.out.println(tag + <span class="string">" 2"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>TestThread的实例是一个线程, tag代表了线程名字。<br>线程跑起来，先输出1，然后交出cpu，在抢夺cpu，如果抢到了，输出2.</p>
-<p>测试代码：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;</span><br><span class="line">    TestThread thread1 = <span class="keyword">new</span> TestThread(<span class="string">"thread1"</span>);</span><br><span class="line">    TestThread thread2 = <span class="keyword">new</span> TestThread(<span class="string">"thread2"</span>);</span><br><span class="line">    thread1.start();</span><br><span class="line">    thread2.start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>测试结果1：</p>
-<blockquote>
-<p>thread1 1<br>thread2 1<br>thread1 2<br>thread2 2</p>
-</blockquote>
-<p>线程1输出1，yield，交出cpu<br>线程2抢到cpu，输出1，然后yield，交出cpu<br>线程1抢到cpu，输出2，线程1结束。<br>最后，cpu给线程2执行，输出2，线程2结束。</p>
-<p>测试结果2：</p>
-<blockquote>
-<p>thread1 1<br>thread2 1<br>thread2 2<br>thread1 2</p>
-</blockquote>
-<p>线程1输出1， yield，交出cpu<br>线程2抢到cpu，输出1，然后yield，交出cpu<br>线程2再次抢到cpu，输出2，线程2结束。<br>最后，cpu给线程1执行，输出2，线程1结束。</p>
-<p>测试结果3：</p>
-<blockquote>
-<p>thread1 1<br>thread1 2<br>thread2 1<br>thread2 2</p>
-</blockquote>
-<p>线程1输出1，yield，交出cpu<br>线程1再次抢到cpu，输出2，线程1结束。<br>cpu交给线程2，输出1, yield，交出cpu<br>此时只有线程2，必然得到cpu时间，输出2，线程2结束。</p>
-
+<p>所以，thread.yield()只是让CPU空闲下来，重新再选一个线程执行。<br>新被选中的线程有可能是其他线程，但也可能，还是当前线程。<br>
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/28/Thread-yield-是什么意思/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     
@@ -210,19 +194,15 @@
     
       <p>1、如何设置drawable的padding和gravity<br>可以在draw之前，通过Gravity的apply方法实现。</p>
 <blockquote>
-<p>public static void apply (int gravity, int w, int h, Rect container, int xAdj, int yAdj, Rect outRect)</p>
-</blockquote>
-<p>假设drawable命名为badge，gravity是badgeGravity，padding是badgePadding，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">Rect</span> <span class="keyword">bound </span>= <span class="keyword">badge.getBounds();</span><br><span class="line"></span><span class="label">Gravity.apply</span>(<span class="keyword">badgeGravity, </span></span><br><span class="line">    <span class="keyword">badge.getIntrinsicWidth(), </span><span class="keyword">badge.getIntrinsicHeight(), </span></span><br><span class="line">    new Rect(<span class="number">0</span>, <span class="number">0</span>, getWidth(), getHeight()), </span><br><span class="line">    <span class="keyword">badgePadding, </span><span class="keyword">badgePadding, </span></span><br><span class="line">    <span class="keyword">bound);</span><br><span class="line"></span><span class="keyword">badge.setBounds(bound);</span></span><br></pre></td></tr></table></figure></p>
-<p>2、如何设置形状为正方形<br>需要重写onMeasure，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthSpec, <span class="keyword">int</span>  heightSpec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onMeasure(widthSpec, heightSpec);</span><br><span class="line">    <span class="keyword">int</span> fixedSize = Math.min(getMeasuredWidth(), getMeasuredHeight());</span><br><span class="line">    setMeasuredDimension(fixedSize, fixedSize);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>关键就在于setMeasureDimension(fixedSize, fixedSize)。<br>在super.onMeasure里面，setMeasureDimension已经执行过，所以必须在后面再调用一次，改成宽高相等。</p>
-<p>还有另一种方法，设置heightSpec和widthSpec一致，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthSpec, <span class="keyword">int</span>  heightSpec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> hSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthSpec),</span><br><span class="line">            MeasureSpec.EXACTLY);</span><br><span class="line">    <span class="keyword">super</span>.onMeasure(widthSpec, hSpec);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>注意，只能根据widthSpec，调整heightSpec。反过来没有效果。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthSpec, <span class="keyword">int</span>  heightSpec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> wSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightSpec),</span><br><span class="line">            MeasureSpec.EXACTLY);</span><br><span class="line">    <span class="keyword">super</span>.onMeasure(wSpec, heightSpec);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这种方式没有效果。</p>
-
+<p>public static void apply (int gravity, int w, int h, Rect container, int xAdj, int yAdj, Rect outRect)<br>
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/24/添加drawable的自定义View-gravity-padding-宽高比/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     
@@ -251,34 +231,15 @@
   
   <div class="entry">
     
-      <p>新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。</p>
-<p>一、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ </p>
-<blockquote>
-<p>view状态发生变化，会引起其内含的drawable的状态也发生变化。</p>
-</blockquote>
-<p>1、view在状态改变时，会调用refreshDrawableState</p>
-<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">refreshDrawableState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ... </span><br><span class="line">    drawableStateChanged();</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">drawableStateChanged</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Drawable d=mBackground;</span><br><span class="line">    <span class="keyword">if</span> (d !=<span class="keyword">null</span> &amp;&amp; d.isStateful()) &#123;</span><br><span class="line">        d.setState(getDrawableState());</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>drawableStateChanged对背景图片进行了重绘，绘制的实现在setState当中实现。</p>
-<p>调用setState的前提是isStateful返回true。Drawable类的isStateful默认是返回false的。因此，我们要添加的foreground，其内部实现必须override isStateful方法。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span> </span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">isStateful</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>我们这里用的foreground，如果继承自StateListDrawable，则不需要override，因为StateListDrawable中isStateful返回true。事实上，一个selector xml文件就对应了一个StateListDrawable。 </p>
-<p>现在想要添加foreground，所以，需要override drawableStateChanged这个方法，在原有逻辑的基础上，添加foreground的状态同步。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span> </span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">drawableStateChanged</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.drawableStateChanged();</span><br><span class="line">    <span class="keyword">if</span> (foreground !=<span class="keyword">null</span> &amp;&amp; foreground.isStateful()) &#123;</span><br><span class="line">        foreground.setState(getDrawableState());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>2、foreground如何通过setState同步状态的<br>看下Drawable类中setState的实现<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">setState</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span>[] stateSet)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!Arrays.equals(mStateSet, stateSet)) &#123;</span><br><span class="line">        mStateSet=stateSet;</span><br><span class="line">        <span class="function"><span class="keyword">return</span> <span class="title">onStateChange</span><span class="params">(stateSet)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onStateChange</span><span class="params">(<span class="keyword">int</span>[] stateSet)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//要找出第一个吻合当前状态的Drawable对象 </span></span><br><span class="line">    <span class="keyword">int</span> idx=mStateListState.indexOfStateSet(stateSet);</span><br><span class="line">    ... <span class="comment">//获取对应索引位置的Drawable对象  </span></span><br><span class="line">    <span class="keyword">if</span> (selectDrawable(idx)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">selectDrawable</span><span class="params">(<span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (idx==mCurIndex) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">if</span> (idx &gt;=<span class="number">0</span> &amp;&amp; idx &lt; mDrawableContainerState.mNumChildren) &#123;</span><br><span class="line">        <span class="keyword">final</span> Drawable d=mDrawableContainerState.getChild(idx);</span><br><span class="line">        mCurrDrawable=d;</span><br><span class="line">        mCurIndex=idx;</span><br><span class="line">        ...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mCurrDrawable=<span class="keyword">null</span>;</span><br><span class="line">        mCurIndex=-<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    invalidateSelf();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>stateSet数组代表了新的状态，比如(pressed, window_focused)。只有新的状态和当前状态不一致，才会重绘。</p>
-<p>通过新的状态，找到对应的drawable，并进行重绘。<br>重绘在invalidateSelf中实现。</p>
-<p>3、drawable如何实现重绘<br>看下drawable类的invalidateSelf的实现，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">invalidateSelf</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Callback callback = getCallback();</span><br><span class="line">    <span class="keyword">if</span> (callback != <span class="keyword">null</span>) &#123;</span><br><span class="line">        callback.invalidateDrawable(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>通过callback接口的invalidateDrawable来实现的，这个callback就是view本身了。</p>
-<p>所以，需要对foreground设置callback为view本身。<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">foreground.setCallback(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure></p>
-<p>4、view调用invalidateDrawable重绘<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Invalidates the specified Drawable.  </span></span><br><span class="line"><span class="comment">//默认实现，重新绘制该视图本身  </span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">invalidateDrawable</span><span class="params">(Drawable drawable)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (verifyDrawable(drawable)) &#123;</span><br><span class="line">        <span class="comment">//是否是同一个Drawable对象，通常为真  </span></span><br><span class="line">        <span class="keyword">final</span> Rect dirty=drawable.getBounds();</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> scrollX=mScrollX;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> scrollY=mScrollY;</span><br><span class="line">        <span class="comment">//重新请求绘制该View，即重新调用该View的draw()方法  </span></span><br><span class="line">        ...  </span><br><span class="line">        invalidate(dirty.left + scrollX, dirty.top + scrollY, dirty.right + scrollX, dirty.bottom + scrollY);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>所以，如果要让drawable显示出来，verifyDrawable必须对该drawable，返回true。</p>
-<p>必须覆盖verifyDrawable，view上的所有drawable都必须调用这个方法，并返回true。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span> </span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">boolean</span> <span class="title">verifyDrawable</span><span class="params">(Drawable who)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.verifyDrawable(who) || (who==foreground);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>二、measure-layout-draw绘制流程中foreground如何添加进去<br>measure采用默认的实现方式即可。</p>
-<p>layout过程中有一个方法必须覆盖，onSizeChanged，因为该方法默认是空实现。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onSizeChanged</span><span class="params">(<span class="keyword">int</span> w, <span class="keyword">int</span> h, <span class="keyword">int</span> oldw, <span class="keyword">int</span> oldh)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onSizeChanged(w, h, oldw, oldh);</span><br><span class="line">    <span class="keyword">if</span> (foreground != <span class="keyword">null</span>) &#123;</span><br><span class="line">        foreground.setBounds(<span class="number">0</span>, <span class="number">0</span>, w, h);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>draw()方法也需要override，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">draw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.draw(canvas);</span><br><span class="line">    <span class="keyword">if</span> (foreground != <span class="keyword">null</span>) &#123;</span><br><span class="line">        foreground.draw(canvas);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
+      <p>新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。<br>
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/23/自定义view-view上添加一个stateful-drawable/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     
@@ -307,26 +268,15 @@
   
   <div class="entry">
     
-      <p>自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。</p>
-<p>1、设置文本相关属性<br>设置文本抗锯齿和子像素抗锯齿，让文本更平滑<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TextPaint textPaint = new TextPaint<span class="list">(<span class="keyword">Paint</span>.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
-<p>设置字体，“sans-serif-black”，正常样式<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">textPaint</span><span class="class">.setTypeface</span>(<span class="tag">Typeface</span><span class="class">.create</span>("<span class="tag">sans-serif-black</span>", <span class="tag">Typeface</span><span class="class">.NORMAL</span>));</span><br></pre></td></tr></table></figure></p>
-<p>设置字体大小，单位为像素<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DisplayMetrics dm = context.getResources().getDisplayMetrics();</span><br><span class="line"><span class="keyword">float</span> scaledDensity = dm.scaledDensity;</span><br><span class="line">textPaint.setTextSize(<span class="number">12</span> * scaledDensity); <span class="comment">// 12dp</span></span><br></pre></td></tr></table></figure></p>
-<p>2、设置完属性后，获取文本宽高<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Rect textBounds = new Rect();</span><br><span class="line">textPaint.getTextBounds(<span class="type">text</span>, <span class="number">0</span>, <span class="type">text</span>.<span class="property">length</span>, textBounds);</span><br></pre></td></tr></table></figure></p>
-<p>3、获取drawable的宽高<br>宽等于文本宽度加上左右padding，高等于文本高度加上上下padding，单位像素<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">float</span> density = dm.density;</span><br><span class="line"><span class="built_in">float</span> padding = density * <span class="number">4</span>; <span class="comment">// 4dp</span></span><br><span class="line"><span class="variable">width</span> = (<span class="built_in">int</span>)(padding + textBounds.<span class="variable">width</span>() + padding);</span><br><span class="line"><span class="variable">height</span> = (<span class="built_in">int</span>)(padding + textBounds.<span class="variable">height</span>() + padding);</span><br></pre></td></tr></table></figure></p>
-<p>4、将文本画在bitmap的画布上<br>创建bitmap<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bitmap </span>= <span class="keyword">Bitmap.createBitmap(width, </span>height, <span class="keyword">Bitmap.Config.ARGB_8888);</span></span><br></pre></td></tr></table></figure></p>
-<p>设置文字透明<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bitmap.setHasAlpha(<span class="literal">true</span>);</span><br></pre></td></tr></table></figure></p>
-<p>获取bitmap的画布<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Canvas canvas = new Canvas<span class="list">(<span class="keyword">bitmap</span>)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
-<p>设置背景抗锯齿<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Paint backgroundPaint = new Paint<span class="list">(<span class="keyword">Paint</span>.ANTI_ALIAS_FLAG)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
-<p>设置背景颜色<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">backgroundPaint</span><span class="class">.setColor</span>(<span class="tag">badgeColor</span>);</span><br></pre></td></tr></table></figure></p>
-<p>画圆角背景到bitmap上<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">float</span> cornerRadius = <span class="number">2</span> * density; <span class="comment">// 2dp</span></span><br><span class="line">canvas.drawRoundRect(<span class="number">0</span>, <span class="number">0</span>, width, height, cornerRadius, cornerRadius, backgroundPaint);</span><br></pre></td></tr></table></figure></p>
-<p>将文字画在bitmap上，颜色为透明<br><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">textPaint<span class="class">.setXfermode</span>(new <span class="function">PorterDuffXfermode</span>(PorteDuff<span class="class">.Mode</span><span class="class">.CLEAR</span>));</span><br><span class="line"><span class="tag">canvas</span><span class="class">.drawText</span>(<span class="value">text</span>, <span class="attribute">padding</span>, <span class="attribute">height</span> - <span class="attribute">padding</span>, textPaint);</span><br></pre></td></tr></table></figure></p>
-<p>文字的起点是左下角(padding, height - padding)。</p>
-<p>5、将bitmap画在自定义的drawable上<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">draw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (bitmap != <span class="keyword">null</span>) &#123;</span><br><span class="line">        canvas.drawBitmap(bitmap, getBounds().left, getBounds().top, paint);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
+      <p>自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。<br>
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/22/自定义drawable-内容文字/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     
@@ -355,26 +305,15 @@
   
   <div class="entry">
     
-      <p>在自定义view的时候，如何自定义属性？<br>比如现在要自定义BadgedImageView，需要自定义gravity, padding, text, color属性。</p>
-<p>1、在styles.xml中声明属性集，集合中包含gravity, padding, text, color四种属性。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">declare-styleable</span> <span class="attribute">name</span>=<span class="value">"BadgedImageView"</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="title">declare-styleable</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>gravity包含了top, bottom, left, right, start, end这几种情况：<br><figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="built_in">attr</span> name = <span class="string">"badgeGravity"</span>&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"top"</span> <span class="built_in">value</span> = <span class="string">"0x30"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"bottom"</span> <span class="built_in">value</span> = <span class="string">"0x50"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"left"</span> <span class="built_in">value</span> = <span class="string">"0x03"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"right"</span> <span class="built_in">value</span> = <span class="string">"0x05"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"start"</span> <span class="built_in">value</span> = <span class="string">"0x00800003"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"end"</span> <span class="built_in">value</span> = <span class="string">"0x0080000"</span> /&gt;</span><br><span class="line">&lt;/<span class="built_in">attr</span>&gt;</span><br></pre></td></tr></table></figure></p>
-<p>padding是int类型<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;attr <span class="property">name</span> = <span class="string">"badgePadding"</span> format = <span class="string">"dimension"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
-<p>text是string类型<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;attr <span class="property">name</span> = <span class="string">"badgeText"</span> format = <span class="string">"string"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
-<p>color是color类型<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;attr <span class="property">name</span> = <span class="string">"badgeColor"</span> format = <span class="string">"color"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
-<p>2、编译过程中，自定义属性会被分配id，格式是：属性集_属性名。</p>
-<p>所以，gravity属性的id是<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BadgedImageView_badgeGravity</span><br></pre></td></tr></table></figure></p>
-<p>padding属性的id是<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BadgedImageView_badgePadding</span><br></pre></td></tr></table></figure></p>
-<p>text属性的id是<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BadgedImageView_badgeText</span><br></pre></td></tr></table></figure></p>
-<p>color属性的id是<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BadgedImageView_badgeColor</span><br></pre></td></tr></table></figure></p>
-<p>这些id，可用于在代码中提取自定义view的相应属性在layout文件中设置的值。</p>
-<p>3、如何在布局文件中使用<br>在layout文件中，需要先定义命名空间<br><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">xmlns:</span>app=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span><br></pre></td></tr></table></figure></p>
-<p>然后，在需要自定义view的地方，即可使用自定义属性<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;com<span class="class">.pleaseyouya</span><span class="class">.androidbasis</span><span class="class">.drawable</span><span class="class">.BadgedFourThreeImageView</span></span><br><span class="line">    android:id=<span class="string">"@+id/badge_dog"</span></span><br><span class="line">    android:layout_width=<span class="string">"300dp"</span></span><br><span class="line">    android:layout_height=<span class="string">"200dp"</span></span><br><span class="line">    android:src=<span class="string">"@drawable/dog"</span></span><br><span class="line">    app:badgeGravity=<span class="string">"top|right"</span></span><br><span class="line">    app:badgePadding=<span class="string">"20dp"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
-<p>4、自定义View如何获取自定义属性的值<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">TypedArray <span class="literal">a</span> = context.obtainStyledAttributes(attrs, R.styleable.BadgedImageView, <span class="number">0</span>, <span class="number">0</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">badgeGravity = <span class="literal">a</span>.getInt(R.styleable.BadgedImageView_badgeGravity, Gravity.END | Gravity.BOTTOM)<span class="comment">;</span></span><br><span class="line">badgePadding = <span class="literal">a</span>.getDimensionPixelSize(R.styleable.BadgedImageView_badgePadding, <span class="number">0</span>)<span class="comment">;</span></span><br><span class="line">badgeText = <span class="literal">a</span>.getString(R.styleable.BadgedImageView_badgeText)<span class="comment">;</span></span><br><span class="line">badgeColor = <span class="literal">a</span>.getColor(R.styleable.BadgedImageView_badgeColor, Color.WHITE)<span class="comment">;</span></span><br><span class="line"><span class="literal">a</span>.recycle()<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
-
+      <p>在自定义view的时候，如何自定义属性？<br>比如现在要自定义BadgedImageView，需要自定义gravity, padding, text, color属性。<br>
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/21/自定义View时如何自定义属性/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     
@@ -406,14 +345,15 @@
       <p>在layout布局文件中可以看到这个属性<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">xm</span><span class="variable">l:tools</span> = <span class="string">"http://schemas.android.com/tools"</span></span><br></pre></td></tr></table></figure></p>
 <p>这个属性是干什么的呢？</p>
 <p>开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。<br>然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。</p>
-<p>这时候，tools就派上用场了。<br>tools可以告诉android studio，tools命名空间下的属性只在预览效果时使用，在实际运行时，这些属性都会自动被忽略。</p>
-<p>比如：<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;TextView</span><br><span class="line">    android:layout_width = <span class="string">"wrap_content"</span></span><br><span class="line">    android:layout_height = <span class="string">"wrap_content"</span></span><br><span class="line">    tools:<span class="type">text</span> = <span class="string">"Hello World"</span></span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure></p>
-<p>硬编码的”Hello World”，在app运行时会被忽略的。</p>
-
+<p>这时候，tools就派上用场了。<br>
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/21/浅谈xml-tools/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     
@@ -442,13 +382,15 @@
   
   <div class="entry">
     
-      <p>做一个个人中心页面的时候，涉及到的布局超出了屏幕高度(布局包含了诸如收藏，钱包，优惠，登陆，注册等等)，然后发现超出屏幕的部分显示不出来，并且页面无法滑动。</p>
-<p>解决办法是，对于太长的布局，需要将其包在一个ScrollView当中。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">ScrollView</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">xmlns:app</span>=<span class="value">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    <span class="attribute">xmlns:tools</span>=<span class="value">"http://schemas.android.com/tools"</span></span><br><span class="line">    <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:orientation</span>=<span class="value">"vertical"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 超长布局 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 想多长都行 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">ScrollView</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-
+      <p>做一个个人中心页面的时候，涉及到的布局超出了屏幕高度(布局包含了诸如收藏，钱包，优惠，登陆，注册等等)，然后发现超出屏幕的部分显示不出来，并且页面无法滑动。<br>
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/21/ScrollView解决超出屏幕高度的layou/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     
@@ -478,25 +420,15 @@
   <div class="entry">
     
       <p>ontouch和onTouchEvent的传递过程是自上而下的。<br>这里的自上而下，是指从父view开始，接着传递给子view。其中传递过程牵涉到三个重要的方法，分别是onInterceptTouchEvent，onTouch，onTouchEvent。</p>
-<p>只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent，但textView则没有改方法。</p>
-<p>对每一个view来说，如果它可以执行onTouch或者onTouchEvent，那么，优先执行onTouch。</p>
-<p>为了说明传递的过程，举个简单的例子。A是父view，B是A的子view，而C是B的子view。</p>
-<blockquote>
-<p>A contains B, B contains C</p>
-</blockquote>
-<p>当touch C，onTouch和onTouchEvent的传递过程是：</p>
-<blockquote>
-<p>A：onInterceptTouchEvent-&gt;false, 传递给B<br>B：onInterceptTouchEvent-&gt;false, 传递给C<br>C：不是view group，直接执行onTouch-&gt;false，继续执行onTouchEvent-&gt;false，传递给B<br>B：执行onTouch-&gt;false，继续执行onTouchEvent-&gt;false,传递给A<br>A：执行onTouch-&gt;false，继续执行onTouchEvent-&gt;false，结束。</p>
-</blockquote>
-<p>onInterceptTouchEvent可以看成是向下传递的拦截器，如果返回true，则不传递给子view了，将由当前view直接执行onTouch。<br>而onTouch和onTouchEvent可以看成是向上传递的拦截器，如果返回true,则不传递给父view了，将结束本次传递。</p>
-<blockquote>
-<p>如果onTouch或onTouchEvent返回true，则后面的事件将不会调用该view的onInterceptTouchEvent，传递到该view时，直接传递给onTouch或onTouchEvent执行。</p>
-</blockquote>
-
+<p>只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent，但textView则没有改方法。<br>
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/20/ontouch和onTouchEvent的传递过程/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     

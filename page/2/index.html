@@ -78,16 +78,14 @@
   <div class="entry">
     
       <p>在程序里面设置listview的divider的时候，发现没有效果。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setDivider</span><span class="params">(Drawable divider)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (divider != <span class="keyword">null</span>) &#123;</span><br><span class="line">        mDividerHeight = divider.getIntrinsicHeight();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mDividerHeight = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//....</span></span><br></pre></td></tr></table></figure></p>
-<p>再看下getIntrinsicHeight()<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getIntrinsicHeight</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>所以，setDivider会导致mDividerHeight变成0或者-1，从而无法显示divider。所以，必须在setDivider后面设置mDividerHeight。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">listView.setDivider(<span class="keyword">new</span> ColorDrawable(<span class="number">0xffd4d5d6</span>));</span><br><span class="line">listView.setDividerHeight(<span class="number">2</span>);</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>注意：setDividerHeight只能放在setDivider后面，不能放在前面。</p>
-</blockquote>
-
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/16/listview-setDivider无效/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     
@@ -117,19 +115,14 @@
   <div class="entry">
     
       <p>场景1、滑动到底部或者顶部时，去掉底部或顶部产生的阴影。<br><figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//去掉滑动到底部时或者顶部时产生的阴影divider</span></span><br><span class="line">listView.setOverScrollMode<span class="comment">(View.OVER_SCROLL_NEVER)</span>;</span><br></pre></td></tr></table></figure></p>
-<p>场景2、让listview滑动到底部<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">listView.post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        listView.smoothScrollToPosition(listView.getCount()-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>还有另一种方式, listview.setSelection(listview.getCount()-1)，但是这种方式没有滑动的动画效果。</p>
-<p>场景3、让listview向下滑动一个item<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">listView.post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        listView.smoothScrollByOffset(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>场景4、让listview向上滑动1个item<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">listView.post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        listView.smoothScrollByOffset(-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>场景5、listview数据变化后，重新从第一个item展示<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">listview.<span class="function"><span class="title">setSelection</span><span class="params">(<span class="number">0</span>)</span></span></span><br></pre></td></tr></table></figure></p>
-<p>或者<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">listview</span><span class="class">.setSelectionAfterHeaderView</span>();</span><br></pre></td></tr></table></figure></p>
-<p>场景6、item中的textview不会抢焦点，但是button会抢焦点，导致listview的onItemClick不被调用。<br>需要每一个item view设置android:descendantFocusability=”blocksDescendants”, 比如：<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;LinearLayout xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    android:orientation=<span class="string">"horizontal"</span></span><br><span class="line">    android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">    android:layout_height=<span class="string">"match_parent"</span></span><br><span class="line">    android:descendantFocusability=<span class="string">"blocksDescendants"</span></span><br><span class="line">    &gt;</span><br><span class="line">    &lt;TextView</span><br><span class="line">        android:<span class="property">id</span>=<span class="string">"@+id/text"</span></span><br><span class="line">        android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">        android:layout_height=<span class="string">"60dp"</span></span><br><span class="line">        android:<span class="type">text</span>=<span class="string">"@string/hello_world"</span></span><br><span class="line">        android:gravity=<span class="string">"center_vertical"</span></span><br><span class="line">        /&gt;</span><br><span class="line">    &lt;Button</span><br><span class="line">        android:<span class="property">id</span>=<span class="string">"@+id/btn"</span></span><br><span class="line">        android:<span class="type">text</span>=<span class="string">"btn"</span></span><br><span class="line">        android:layout_width=<span class="string">"100dp"</span></span><br><span class="line">        android:layout_height=<span class="string">"50dp"</span>/&gt;</span><br><span class="line">&lt;/LinearLayout&gt;</span><br></pre></td></tr></table></figure></p>
-<p>这样onItemClick可以正常执行，并且button当点击时同样可以获取焦点。</p>
-
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/16/listview常见使用场景/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     
@@ -158,23 +151,15 @@
   
   <div class="entry">
     
-      <p>目标：实现两个进程间通信，通过sharedPreferences。</p>
-<ol>
-<li><h3 id="u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u5B58_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u4E2D_u5374_u53D6_u4E0D_u5230_u6570_u636E_uFF1F"><a href="#u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u5B58_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u4E2D_u5374_u53D6_u4E0D_u5230_u6570_u636E_uFF1F" class="headerlink" title="问题：在进程A中存数据，但是在进程B中却取不到数据？"></a>问题：在进程A中存数据，但是在进程B中却取不到数据？</h3><p><em>发现问题</em>：进程A在getSharedPreferences的模式是<em>MODE_PRIVATE</em>，此时进程B肯定读不到。<br><em>正确的做法</em>：进程A在getSharedPreferences的模式是MODE_WORLD_READABLE</p>
-<figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">getSharedPreferences(<span class="string">"pref"</span>, <span class="type">Context</span>.<span class="type">MODE_WORLD_READABLE</span>).edit<span class="literal">()</span></span><br><span class="line">                        .putString</span><br><span class="line">                        (<span class="string">"key"</span>,</span><br><span class="line">                        <span class="string">"world readable"</span>).commit<span class="literal">()</span>;</span><br></pre></td></tr></table></figure>
-</li>
-<li><h3 id="u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u4FEE_u6539sharedPreference_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u8BFB_u5230_u7684_u59CB_u7EC8_u662F_u7B2C_u4E00_u6B21_u7684_u6570_u636E_uFF1F"><a href="#u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u4FEE_u6539sharedPreference_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u8BFB_u5230_u7684_u59CB_u7EC8_u662F_u7B2C_u4E00_u6B21_u7684_u6570_u636E_uFF1F" class="headerlink" title="问题：在进程A中修改sharedPreference数据，但是在进程B读到的始终是第一次的数据？"></a>问题：在进程A中修改sharedPreference数据，但是在进程B读到的始终是第一次的数据？</h3><p><em>发现问题</em>：进程B在getSharedPreferences的模式不是<em>MODE_MULTI_PROCESS</em>，preference并没有从文件中reload。<br><em>正确的做法</em>：进程B在getSharedPreferences的模式是<em>MODE_MULTI_PROCESS</em>，每次获取都会reload。</p>
-<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">String </span>s = getSharedPreferences(<span class="string">"pref"</span>, MODE_MULTI_PROCESS).getString(<span class="string">"key"</span>,</span><br><span class="line">                <span class="string">"default"</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>具体的内部逻辑可参考ContextImpl源码，后续会给出原因分析。</p>
-<p>性能考虑：<br>commit()和apply()每次都是将所有的设置信息写入文件，比如putString(“key”, “data”).commit()， 并非只将key-data写入，而是所有的设置重写一遍。所以，不要每次putXXX就commit一次。<br>所以，<br><figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sharedpreferences.edit<span class="literal">()</span>.putString(<span class="string">"key1"</span>, <span class="string">"data1"</span>);</span><br><span class="line">sharedpreferences.edit<span class="literal">()</span>.putString(<span class="string">"key2"</span>, <span class="string">"data2"</span>);</span><br><span class="line">sharedpreferences.edit<span class="literal">()</span>.commit<span class="literal">()</span>;</span><br></pre></td></tr></table></figure></p>
-<p>性能比如下好：<br><figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sharedpreferences.edit<span class="literal">()</span>.putString(<span class="string">"key1"</span>, <span class="string">"data1"</span>).commit<span class="literal">()</span>;</span><br><span class="line">sharedpreferences.edit<span class="literal">()</span>.putString(<span class="string">"key2"</span>, <span class="string">"data2"</span>).commit<span class="literal">()</span>;</span><br></pre></td></tr></table></figure></p>
-
+      <p>目标：实现两个进程间通信，通过sharedPreferences。<br>
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/16/浅谈android-sharedpreferences-mode/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     
@@ -203,15 +188,15 @@
   
   <div class="entry">
     
-      <p>在android中，listview可以添加header和footer。<br>不管是header还是footer，和listview的item之间默认都有divider。<br>如果添加header时不希望和第一个item有divider，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">android:headerDividersEnabled </span>= <span class="string">"false"</span></span><br></pre></td></tr></table></figure></p>
-<p>如果添加footer时不希望和最后一个item有divider，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">android:footerDividersEnabled </span>= <span class="string">"false"</span></span><br></pre></td></tr></table></figure></p>
-<p>listview的第一个item的上边和最后一个item的下边默认都没有divider，而item之间都默认有。<br>如果想去掉所有的divider，包括header和footer的，<br><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">android:</span>divider=<span class="string">"@null"</span></span><br></pre></td></tr></table></figure></p>
-<p>此时，headerDividersEnabled和footerDividersEnabled怎么设置都没效果了。</p>
-
+      <p>在android中，listview可以添加header和footer。<br>不管是header还是footer，和listview的item之间默认都有divider。<br>
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/14/android-headerDividersEnabled和android-footerDividersEnabled/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     
@@ -240,24 +225,15 @@
   
   <div class="entry">
     
-      <p>如何把一个项目推送到github上面呢？可以让git的版本管理帮你完成这件事。<br>既然git要完成推送本地项目到github的任务，它需要管理本地的项目，同时需要知道推送到github上哪一个地方。</p>
-<pre><code>1、git需要管理本地项目，即把该项目转化成一个git仓库。
-</code></pre><p>如何把一个项目转化成一个仓库呢？做法是，在项目本目录下，执行git init。</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">git</span> init</span><br></pre></td></tr></table></figure>
-<p>初始化之后，现在的git仓库是空的<br>一个仓库分3个区，名曰工作区、候选区和本地库。工作区可以想象成是一线地带，本地库则是本地的后台仓库。候选区表示了每一次提交到后台库的东西，相当于我们在工作区的文件中，把要存到后台库的文件都打钩，这些打钩的文件就是候选区中的文件啦。<br>候选区的意义在于，比如我们工作区有一些文件不想要加到本地库中，则不将其打钩（不放到候选区）；比如工作区有一些文件删除了，但是后台库相应的文件不想被删掉，则不将被删掉的文件打钩（不放到候选区）。<br>总而言之，同步到本地后台仓库需要两个步骤，一个是打钩（选择哪些文件要同步）；一个是提交。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git <span class="operator"><span class="keyword">commit</span> -<span class="keyword">m</span> <span class="string">"this is a comment"</span></span></span><br></pre></td></tr></table></figure>
-<p>git add的作用就是将文件打钩（放到候选区），准备同步到本地后台库。<br>git commit的作用就是同步到本地后台库。</p>
-<pre><code>2、要推送到github的什么地方，什么仓库
-</code></pre><p>本地的git需要知道目的地址，否则无法做推送。首先需要在github上新建一个仓库。<br>然后让git知道该仓库的地址，并给这个仓库起个名字。</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin <span class="string">https:</span><span class="comment">//pleaseyouya/AndroidBasis.git</span></span><br></pre></td></tr></table></figure>
-<p>现在git知道了推送到仓库<a href="https://pleaseyouya/AndroidBasis.git，并且给该仓库起名叫做origin，当然，也可以起其他的名字。" target="_blank" rel="external">https://pleaseyouya/AndroidBasis.git，并且给该仓库起名叫做origin，当然，也可以起其他的名字。</a></p>
-<pre><code>3、推送本地项目到github
-</code></pre><p>最后，将本地的项目推送到github，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">git</span> <span class="keyword">push </span>-u origin master</span><br></pre></td></tr></table></figure></p>
-
+      <p>如何把一个项目推送到github上面呢？可以让git的版本管理帮你完成这件事。<br>
     
   </div>
   <footer class="end-sep">
     
+      
+        <div class="alignleft">
+          <a href="/2016/01/12/添加一个本地项目到github/#more" class="more-link">阅读全文</a>
+        </div>
       
       
     

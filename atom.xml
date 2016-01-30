@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-28T16:53:14.000Z</updated>
+  <updated>2016-01-30T09:27:49.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -19,10 +19,10 @@
     <link href="http://pleaseyouya.com/2016/01/28/BlockingQueue%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0put%E5%8A%9F%E8%83%BD/"/>
     <id>http://pleaseyouya.com/2016/01/28/BlockingQueue怎么实现put功能/</id>
     <published>2016-01-28T15:50:18.000Z</published>
-    <updated>2016-01-28T16:53:14.000Z</updated>
+    <updated>2016-01-30T09:27:49.000Z</updated>
     <content type="html"><![CDATA[<p>volley源码中，网络请求队列mNetworkQueue被缓存线程和若干个网络线程访问，需要同步。<br>volley采用PriorityBlockingQueue来实现不同线程间的同步。</p>
 <p>其中，涉及到的操作有take，put, add。</p>
-<p>本文分析PriorityBlockingQueue的put方法实现。<br><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="literal">void</span> put(E e) &#123;</span><br><span class="line">     offer(e); <span class="comment">// never need to block</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">boolean</span> offer(E e) &#123;</span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    lock<span class="built_in">.</span>lock();</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    <span class="comment">// 分配空间，有可能分配失败。失败情况下重新尝试分配。</span></span><br><span class="line">    <span class="keyword">while</span> ((n = size) &gt;= (cap = (<span class="built_in">array</span> = <span class="built_in">queue</span>)<span class="built_in">.</span>length))</span><br><span class="line">        tryGrow(<span class="built_in">array</span>, cap);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (cmp == <span class="built_in">null</span>)</span><br><span class="line">        siftUpComparable(n, e, <span class="built_in">array</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        siftUpUsingComparat<span class="subst">or</span>(n, e, <span class="built_in">array</span>, cmp);</span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    notEmpty<span class="built_in">.</span>signal();</span><br><span class="line">    </span><br><span class="line">    lock<span class="built_in">.</span>unlock();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>本文分析PriorityBlockingQueue的put方法实现。<br><a id="more"></a><br><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="literal">void</span> put(E e) &#123;</span><br><span class="line">     offer(e); <span class="comment">// never need to block</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">boolean</span> offer(E e) &#123;</span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    lock<span class="built_in">.</span>lock();</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    <span class="comment">// 分配空间，有可能分配失败。失败情况下重新尝试分配。</span></span><br><span class="line">    <span class="keyword">while</span> ((n = size) &gt;= (cap = (<span class="built_in">array</span> = <span class="built_in">queue</span>)<span class="built_in">.</span>length))</span><br><span class="line">        tryGrow(<span class="built_in">array</span>, cap);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (cmp == <span class="built_in">null</span>)</span><br><span class="line">        siftUpComparable(n, e, <span class="built_in">array</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        siftUpUsingComparat<span class="subst">or</span>(n, e, <span class="built_in">array</span>, cmp);</span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    notEmpty<span class="built_in">.</span>signal();</span><br><span class="line">    </span><br><span class="line">    lock<span class="built_in">.</span>unlock();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>put实际是调用offer方法。<br>首先，获取主锁。</p>
 <p>如果目前数据量已经充满(达到capacity)，重新分配空间。<br>分配空间，有可能分配失败。失败情况下重新尝试分配。</p>
 <p>根据定义的优先级，将数据放到合适的位置。<br>此时，queue肯定非空，释放非空信号。</p>
@@ -31,7 +31,8 @@
     <summary type="html">
     <![CDATA[<p>volley源码中，网络请求队列mNetworkQueue被缓存线程和若干个网络线程访问，需要同步。<br>volley采用PriorityBlockingQueue来实现不同线程间的同步。</p>
 <p>其中，涉及到的操作有take，put, add。</p>
-<p>本文]]>
+<p>本文分析PriorityBlockingQueue的put方法实现。<br>]]>
+    
     </summary>
     
       <category term="concurrent" scheme="http://pleaseyouya.com/tags/concurrent/"/>
@@ -45,10 +46,10 @@
     <link href="http://pleaseyouya.com/2016/01/28/Thread-yield-%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D/"/>
     <id>http://pleaseyouya.com/2016/01/28/Thread-yield-是什么意思/</id>
     <published>2016-01-28T13:27:44.000Z</published>
-    <updated>2016-01-28T14:13:57.000Z</updated>
+    <updated>2016-01-30T09:30:03.000Z</updated>
     <content type="html"><![CDATA[<p>thread.yield()这个方法是什么意思？<br>yield中文翻译，可以译成”让步”。yield()是否是把执行权让给其他线程的意思？</p>
 <p>不是。yield()表示交出当前的Cpu时间，也就是让Cpu进入可重新分配的状态。而当前线程则由运行状态转入准备状态。<br>此时，当前线程和其他线程一样，都在准备状态(在同一起跑线上)，一起竞争CPU的使用权。</p>
-<p>所以，thread.yield()只是让CPU空闲下来，重新再选一个线程执行。<br>新被选中的线程有可能是其他线程，但也可能，还是当前线程。</p>
+<p>所以，thread.yield()只是让CPU空闲下来，重新再选一个线程执行。<br>新被选中的线程有可能是其他线程，但也可能，还是当前线程。<br><a id="more"></a></p>
 <p>看一个例子。<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public static <span class="class"><span class="keyword">class</span> <span class="title">TestThread</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Thread</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">String</span> tag;</span><br><span class="line">    public <span class="type">TestThread</span>(<span class="type">String</span> tag) &#123;</span><br><span class="line">        <span class="keyword">this</span>.tag = tag;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    public void run() &#123;</span><br><span class="line">        <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">        <span class="keyword">super</span>.run();</span><br><span class="line">        <span class="type">System</span>.out.println(tag + <span class="string">" 1"</span>);</span><br><span class="line">        <span class="type">Thread</span>.<span class="keyword">yield</span>();</span><br><span class="line">        <span class="type">System</span>.out.println(tag + <span class="string">" 2"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>TestThread的实例是一个线程, tag代表了线程名字。<br>线程跑起来，先输出1，然后交出cpu，在抢夺cpu，如果抢到了，输出2.</p>
 <p>测试代码：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;</span><br><span class="line">    TestThread thread1 = <span class="keyword">new</span> TestThread(<span class="string">"thread1"</span>);</span><br><span class="line">    TestThread thread2 = <span class="keyword">new</span> TestThread(<span class="string">"thread2"</span>);</span><br><span class="line">    thread1.start();</span><br><span class="line">    thread2.start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -70,7 +71,9 @@
 ]]></content>
     <summary type="html">
     <![CDATA[<p>thread.yield()这个方法是什么意思？<br>yield中文翻译，可以译成”让步”。yield()是否是把执行权让给其他线程的意思？</p>
-<p>不是。yield()表示交出当前的Cpu时间，也就是让Cpu进入可重新分配的状态。而当前线程则由运行状态转入准备状态]]>
+<p>不是。yield()表示交出当前的Cpu时间，也就是让Cpu进入可重新分配的状态。而当前线程则由运行状态转入准备状态。<br>此时，当前线程和其他线程一样，都在准备状态(在同一起跑线上)，一起竞争CPU的使用权。</p>
+<p>所以，thread.yield()只是让CPU空闲下来，重新再选一个线程执行。<br>新被选中的线程有可能是其他线程，但也可能，还是当前线程。<br>]]>
+    
     </summary>
     
       <category term="Java" scheme="http://pleaseyouya.com/tags/Java/"/>
@@ -135,12 +138,11 @@
     <link href="http://pleaseyouya.com/2016/01/24/%E6%B7%BB%E5%8A%A0drawable%E7%9A%84%E8%87%AA%E5%AE%9A%E4%B9%89View-gravity-padding-%E5%AE%BD%E9%AB%98%E6%AF%94/"/>
     <id>http://pleaseyouya.com/2016/01/24/添加drawable的自定义View-gravity-padding-宽高比/</id>
     <published>2016-01-24T03:20:42.000Z</published>
-    <updated>2016-01-24T05:02:45.000Z</updated>
+    <updated>2016-01-30T09:30:58.000Z</updated>
     <content type="html"><![CDATA[<p>1、如何设置drawable的padding和gravity<br>可以在draw之前，通过Gravity的apply方法实现。</p>
 <blockquote>
-<p>public static void apply (int gravity, int w, int h, Rect container, int xAdj, int yAdj, Rect outRect)</p>
+<p>public static void apply (int gravity, int w, int h, Rect container, int xAdj, int yAdj, Rect outRect)<br><a id="more"></a><br>假设drawable命名为badge，gravity是badgeGravity，padding是badgePadding，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">Rect</span> <span class="keyword">bound </span>= <span class="keyword">badge.getBounds();</span><br><span class="line"></span><span class="label">Gravity.apply</span>(<span class="keyword">badgeGravity, </span></span><br><span class="line">    <span class="keyword">badge.getIntrinsicWidth(), </span><span class="keyword">badge.getIntrinsicHeight(), </span></span><br><span class="line">    new Rect(<span class="number">0</span>, <span class="number">0</span>, getWidth(), getHeight()), </span><br><span class="line">    <span class="keyword">badgePadding, </span><span class="keyword">badgePadding, </span></span><br><span class="line">    <span class="keyword">bound);</span><br><span class="line"></span><span class="keyword">badge.setBounds(bound);</span></span><br></pre></td></tr></table></figure></p>
 </blockquote>
-<p>假设drawable命名为badge，gravity是badgeGravity，padding是badgePadding，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">Rect</span> <span class="keyword">bound </span>= <span class="keyword">badge.getBounds();</span><br><span class="line"></span><span class="label">Gravity.apply</span>(<span class="keyword">badgeGravity, </span></span><br><span class="line">    <span class="keyword">badge.getIntrinsicWidth(), </span><span class="keyword">badge.getIntrinsicHeight(), </span></span><br><span class="line">    new Rect(<span class="number">0</span>, <span class="number">0</span>, getWidth(), getHeight()), </span><br><span class="line">    <span class="keyword">badgePadding, </span><span class="keyword">badgePadding, </span></span><br><span class="line">    <span class="keyword">bound);</span><br><span class="line"></span><span class="keyword">badge.setBounds(bound);</span></span><br></pre></td></tr></table></figure></p>
 <p>2、如何设置形状为正方形<br>需要重写onMeasure，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthSpec, <span class="keyword">int</span>  heightSpec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onMeasure(widthSpec, heightSpec);</span><br><span class="line">    <span class="keyword">int</span> fixedSize = Math.min(getMeasuredWidth(), getMeasuredHeight());</span><br><span class="line">    setMeasuredDimension(fixedSize, fixedSize);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>关键就在于setMeasureDimension(fixedSize, fixedSize)。<br>在super.onMeasure里面，setMeasureDimension已经执行过，所以必须在后面再调用一次，改成宽高相等。</p>
 <p>还有另一种方法，设置heightSpec和widthSpec一致，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthSpec, <span class="keyword">int</span>  heightSpec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> hSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthSpec),</span><br><span class="line">            MeasureSpec.EXACTLY);</span><br><span class="line">    <span class="keyword">super</span>.onMeasure(widthSpec, hSpec);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -150,7 +152,8 @@
     <summary type="html">
     <![CDATA[<p>1、如何设置drawable的padding和gravity<br>可以在draw之前，通过Gravity的apply方法实现。</p>
 <blockquote>
-<p>public static void apply (int gravity, int w, int h,]]>
+<p>public static void apply (int gravity, int w, int h, Rect container, int xAdj, int yAdj, Rect outRect)<br>]]>
+    
     </summary>
     
       <category term="android" scheme="http://pleaseyouya.com/tags/android/"/>
@@ -162,9 +165,8 @@
     <link href="http://pleaseyouya.com/2016/01/23/%E8%87%AA%E5%AE%9A%E4%B9%89view-view%E4%B8%8A%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AAstateful-drawable/"/>
     <id>http://pleaseyouya.com/2016/01/23/自定义view-view上添加一个stateful-drawable/</id>
     <published>2016-01-23T07:11:17.000Z</published>
-    <updated>2016-01-24T02:53:44.000Z</updated>
-    <content type="html"><![CDATA[<p>新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。</p>
-<p>一、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ </p>
+    <updated>2016-01-30T09:31:49.000Z</updated>
+    <content type="html"><![CDATA[<p>新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。<br><a id="more"></a><br>一、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ </p>
 <blockquote>
 <p>view状态发生变化，会引起其内含的drawable的状态也发生变化。</p>
 </blockquote>
@@ -188,10 +190,8 @@
 <p>draw()方法也需要override，<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">draw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.draw(canvas);</span><br><span class="line">    <span class="keyword">if</span> (foreground != <span class="keyword">null</span>) &#123;</span><br><span class="line">        foreground.draw(canvas);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。</p>
-<p>一、如何根据view的状态(比如点击), 改变drawable(隐藏，显示)？ </p>
-<blockquote>
-<p>vie]]>
+    <![CDATA[<p>新添加的drawable，奇数次点击的时候会显示，偶数次点击的时候隐藏。 假设，新添加的drawable，叫foreground。<br>]]>
+    
     </summary>
     
       <category term="android" scheme="http://pleaseyouya.com/tags/android/"/>
@@ -203,9 +203,8 @@
     <link href="http://pleaseyouya.com/2016/01/22/%E8%87%AA%E5%AE%9A%E4%B9%89drawable-%E5%86%85%E5%AE%B9%E6%96%87%E5%AD%97/"/>
     <id>http://pleaseyouya.com/2016/01/22/自定义drawable-内容文字/</id>
     <published>2016-01-21T16:11:30.000Z</published>
-    <updated>2016-01-22T15:01:28.000Z</updated>
-    <content type="html"><![CDATA[<p>自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。</p>
-<p>1、设置文本相关属性<br>设置文本抗锯齿和子像素抗锯齿，让文本更平滑<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TextPaint textPaint = new TextPaint<span class="list">(<span class="keyword">Paint</span>.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+    <updated>2016-01-30T09:31:24.000Z</updated>
+    <content type="html"><![CDATA[<p>自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。<br><a id="more"></a><br>1、设置文本相关属性<br>设置文本抗锯齿和子像素抗锯齿，让文本更平滑<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TextPaint textPaint = new TextPaint<span class="list">(<span class="keyword">Paint</span>.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
 <p>设置字体，“sans-serif-black”，正常样式<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">textPaint</span><span class="class">.setTypeface</span>(<span class="tag">Typeface</span><span class="class">.create</span>("<span class="tag">sans-serif-black</span>", <span class="tag">Typeface</span><span class="class">.NORMAL</span>));</span><br></pre></td></tr></table></figure></p>
 <p>设置字体大小，单位为像素<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DisplayMetrics dm = context.getResources().getDisplayMetrics();</span><br><span class="line"><span class="keyword">float</span> scaledDensity = dm.scaledDensity;</span><br><span class="line">textPaint.setTextSize(<span class="number">12</span> * scaledDensity); <span class="comment">// 12dp</span></span><br></pre></td></tr></table></figure></p>
 <p>2、设置完属性后，获取文本宽高<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Rect textBounds = new Rect();</span><br><span class="line">textPaint.getTextBounds(<span class="type">text</span>, <span class="number">0</span>, <span class="type">text</span>.<span class="property">length</span>, textBounds);</span><br></pre></td></tr></table></figure></p>
@@ -221,8 +220,8 @@
 <p>5、将bitmap画在自定义的drawable上<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">draw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (bitmap != <span class="keyword">null</span>) &#123;</span><br><span class="line">        canvas.drawBitmap(bitmap, getBounds().left, getBounds().top, paint);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。</p>
-<p>1、设置文本相关属性<br>设置文本抗锯齿和子像素抗锯齿，让文本更平滑<br><figure clas]]>
+    <![CDATA[<p>自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。<br>]]>
+    
     </summary>
     
       <category term="android" scheme="http://pleaseyouya.com/tags/android/"/>
@@ -234,9 +233,8 @@
     <link href="http://pleaseyouya.com/2016/01/21/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%97%B6%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B1%9E%E6%80%A7/"/>
     <id>http://pleaseyouya.com/2016/01/21/自定义View时如何自定义属性/</id>
     <published>2016-01-21T15:00:21.000Z</published>
-    <updated>2016-01-21T15:31:41.000Z</updated>
-    <content type="html"><![CDATA[<p>在自定义view的时候，如何自定义属性？<br>比如现在要自定义BadgedImageView，需要自定义gravity, padding, text, color属性。</p>
-<p>1、在styles.xml中声明属性集，集合中包含gravity, padding, text, color四种属性。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">declare-styleable</span> <span class="attribute">name</span>=<span class="value">"BadgedImageView"</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="title">declare-styleable</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+    <updated>2016-01-30T09:32:02.000Z</updated>
+    <content type="html"><![CDATA[<p>在自定义view的时候，如何自定义属性？<br>比如现在要自定义BadgedImageView，需要自定义gravity, padding, text, color属性。<br><a id="more"></a><br>1、在styles.xml中声明属性集，集合中包含gravity, padding, text, color四种属性。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">declare-styleable</span> <span class="attribute">name</span>=<span class="value">"BadgedImageView"</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="title">declare-styleable</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>gravity包含了top, bottom, left, right, start, end这几种情况：<br><figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="built_in">attr</span> name = <span class="string">"badgeGravity"</span>&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"top"</span> <span class="built_in">value</span> = <span class="string">"0x30"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"bottom"</span> <span class="built_in">value</span> = <span class="string">"0x50"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"left"</span> <span class="built_in">value</span> = <span class="string">"0x03"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"right"</span> <span class="built_in">value</span> = <span class="string">"0x05"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"start"</span> <span class="built_in">value</span> = <span class="string">"0x00800003"</span> /&gt;</span><br><span class="line">    &lt;flag name = <span class="string">"end"</span> <span class="built_in">value</span> = <span class="string">"0x0080000"</span> /&gt;</span><br><span class="line">&lt;/<span class="built_in">attr</span>&gt;</span><br></pre></td></tr></table></figure></p>
 <p>padding是int类型<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;attr <span class="property">name</span> = <span class="string">"badgePadding"</span> format = <span class="string">"dimension"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
 <p>text是string类型<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;attr <span class="property">name</span> = <span class="string">"badgeText"</span> format = <span class="string">"string"</span> /&gt;</span><br></pre></td></tr></table></figure></p>
@@ -252,8 +250,8 @@
 <p>4、自定义View如何获取自定义属性的值<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">TypedArray <span class="literal">a</span> = context.obtainStyledAttributes(attrs, R.styleable.BadgedImageView, <span class="number">0</span>, <span class="number">0</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">badgeGravity = <span class="literal">a</span>.getInt(R.styleable.BadgedImageView_badgeGravity, Gravity.END | Gravity.BOTTOM)<span class="comment">;</span></span><br><span class="line">badgePadding = <span class="literal">a</span>.getDimensionPixelSize(R.styleable.BadgedImageView_badgePadding, <span class="number">0</span>)<span class="comment">;</span></span><br><span class="line">badgeText = <span class="literal">a</span>.getString(R.styleable.BadgedImageView_badgeText)<span class="comment">;</span></span><br><span class="line">badgeColor = <span class="literal">a</span>.getColor(R.styleable.BadgedImageView_badgeColor, Color.WHITE)<span class="comment">;</span></span><br><span class="line"><span class="literal">a</span>.recycle()<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>在自定义view的时候，如何自定义属性？<br>比如现在要自定义BadgedImageView，需要自定义gravity, padding, text, color属性。</p>
-<p>1、在styles.xml中声明属性集，集合中包含gravity, padding, t]]>
+    <![CDATA[<p>在自定义view的时候，如何自定义属性？<br>比如现在要自定义BadgedImageView，需要自定义gravity, padding, text, color属性。<br>]]>
+    
     </summary>
     
   </entry>
@@ -263,16 +261,20 @@
     <link href="http://pleaseyouya.com/2016/01/21/%E6%B5%85%E8%B0%88xml-tools/"/>
     <id>http://pleaseyouya.com/2016/01/21/浅谈xml-tools/</id>
     <published>2016-01-21T14:14:57.000Z</published>
-    <updated>2016-01-21T14:26:05.000Z</updated>
+    <updated>2016-01-30T09:30:38.000Z</updated>
     <content type="html"><![CDATA[<p>在layout布局文件中可以看到这个属性<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">xm</span><span class="variable">l:tools</span> = <span class="string">"http://schemas.android.com/tools"</span></span><br></pre></td></tr></table></figure></p>
 <p>这个属性是干什么的呢？</p>
 <p>开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。<br>然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。</p>
-<p>这时候，tools就派上用场了。<br>tools可以告诉android studio，tools命名空间下的属性只在预览效果时使用，在实际运行时，这些属性都会自动被忽略。</p>
+<p>这时候，tools就派上用场了。<br><a id="more"></a><br>tools可以告诉android studio，tools命名空间下的属性只在预览效果时使用，在实际运行时，这些属性都会自动被忽略。</p>
 <p>比如：<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;TextView</span><br><span class="line">    android:layout_width = <span class="string">"wrap_content"</span></span><br><span class="line">    android:layout_height = <span class="string">"wrap_content"</span></span><br><span class="line">    tools:<span class="type">text</span> = <span class="string">"Hello World"</span></span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure></p>
 <p>硬编码的”Hello World”，在app运行时会被忽略的。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>在layout布局文件中可以看到这个属性<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td cl]]>
+    <![CDATA[<p>在layout布局文件中可以看到这个属性<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">xm</span><span class="variable">l:tools</span> = <span class="string">"http://schemas.android.com/tools"</span></span><br></pre></td></tr></table></figure></p>
+<p>这个属性是干什么的呢？</p>
+<p>开发项目的时候，有时候为了看预览布局，会硬编码一些属性的值。比如text属性硬编码，查看效果。<br>然后，这些硬编码的属性应该去掉，有时候开发可能就会忘了这事。</p>
+<p>这时候，tools就派上用场了。<br>]]>
+    
     </summary>
     
   </entry>
@@ -282,13 +284,13 @@
     <link href="http://pleaseyouya.com/2016/01/21/ScrollView%E8%A7%A3%E5%86%B3%E8%B6%85%E5%87%BA%E5%B1%8F%E5%B9%95%E9%AB%98%E5%BA%A6%E7%9A%84layou/"/>
     <id>http://pleaseyouya.com/2016/01/21/ScrollView解决超出屏幕高度的layou/</id>
     <published>2016-01-20T16:22:53.000Z</published>
-    <updated>2016-01-20T16:28:39.000Z</updated>
-    <content type="html"><![CDATA[<p>做一个个人中心页面的时候，涉及到的布局超出了屏幕高度(布局包含了诸如收藏，钱包，优惠，登陆，注册等等)，然后发现超出屏幕的部分显示不出来，并且页面无法滑动。</p>
+    <updated>2016-01-30T09:29:47.000Z</updated>
+    <content type="html"><![CDATA[<p>做一个个人中心页面的时候，涉及到的布局超出了屏幕高度(布局包含了诸如收藏，钱包，优惠，登陆，注册等等)，然后发现超出屏幕的部分显示不出来，并且页面无法滑动。<br><a id="more"></a></p>
 <p>解决办法是，对于太长的布局，需要将其包在一个ScrollView当中。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">ScrollView</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">xmlns:app</span>=<span class="value">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    <span class="attribute">xmlns:tools</span>=<span class="value">"http://schemas.android.com/tools"</span></span><br><span class="line">    <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:orientation</span>=<span class="value">"vertical"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 超长布局 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 想多长都行 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">ScrollView</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>做一个个人中心页面的时候，涉及到的布局超出了屏幕高度(布局包含了诸如收藏，钱包，优惠，登陆，注册等等)，然后发现超出屏幕的部分显示不出来，并且页面无法滑动。</p>
-<p>解决办法是，对于太长的布局，需要将其包在一个ScrollView当中。<br><figure clas]]>
+    <![CDATA[<p>做一个个人中心页面的时候，涉及到的布局超出了屏幕高度(布局包含了诸如收藏，钱包，优惠，登陆，注册等等)，然后发现超出屏幕的部分显示不出来，并且页面无法滑动。<br>]]>
+    
     </summary>
     
       <category term="android" scheme="http://pleaseyouya.com/tags/android/"/>
@@ -300,9 +302,9 @@
     <link href="http://pleaseyouya.com/2016/01/20/ontouch%E5%92%8ConTouchEvent%E7%9A%84%E4%BC%A0%E9%80%92%E8%BF%87%E7%A8%8B/"/>
     <id>http://pleaseyouya.com/2016/01/20/ontouch和onTouchEvent的传递过程/</id>
     <published>2016-01-19T16:36:25.000Z</published>
-    <updated>2016-01-19T17:01:09.000Z</updated>
+    <updated>2016-01-30T09:29:29.000Z</updated>
     <content type="html"><![CDATA[<p>ontouch和onTouchEvent的传递过程是自上而下的。<br>这里的自上而下，是指从父view开始，接着传递给子view。其中传递过程牵涉到三个重要的方法，分别是onInterceptTouchEvent，onTouch，onTouchEvent。</p>
-<p>只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent，但textView则没有改方法。</p>
+<p>只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent，但textView则没有改方法。<br><a id="more"></a></p>
 <p>对每一个view来说，如果它可以执行onTouch或者onTouchEvent，那么，优先执行onTouch。</p>
 <p>为了说明传递的过程，举个简单的例子。A是父view，B是A的子view，而C是B的子view。</p>
 <blockquote>
@@ -319,7 +321,8 @@
 ]]></content>
     <summary type="html">
     <![CDATA[<p>ontouch和onTouchEvent的传递过程是自上而下的。<br>这里的自上而下，是指从父view开始，接着传递给子view。其中传递过程牵涉到三个重要的方法，分别是onInterceptTouchEvent，onTouch，onTouchEvent。</p>
-<p>]]>
+<p>只有ViewGroup类型的控件才有onInterceptTouchEvent方法。比如ListView有onInterceptTouchEvent，但textView则没有改方法。<br>]]>
+    
     </summary>
     
   </entry>
@@ -329,8 +332,9 @@
     <link href="http://pleaseyouya.com/2016/01/16/listview-setDivider%E6%97%A0%E6%95%88/"/>
     <id>http://pleaseyouya.com/2016/01/16/listview-setDivider无效/</id>
     <published>2016-01-16T13:30:39.000Z</published>
-    <updated>2016-01-16T13:41:37.000Z</updated>
+    <updated>2016-01-30T09:28:43.000Z</updated>
     <content type="html"><![CDATA[<p>在程序里面设置listview的divider的时候，发现没有效果。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setDivider</span><span class="params">(Drawable divider)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (divider != <span class="keyword">null</span>) &#123;</span><br><span class="line">        mDividerHeight = divider.getIntrinsicHeight();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mDividerHeight = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//....</span></span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
 <p>再看下getIntrinsicHeight()<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getIntrinsicHeight</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>所以，setDivider会导致mDividerHeight变成0或者-1，从而无法显示divider。所以，必须在setDivider后面设置mDividerHeight。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">listView.setDivider(<span class="keyword">new</span> ColorDrawable(<span class="number">0xffd4d5d6</span>));</span><br><span class="line">listView.setDividerHeight(<span class="number">2</span>);</span><br></pre></td></tr></table></figure></p>
 <blockquote>
@@ -338,7 +342,8 @@
 </blockquote>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>在程序里面设置listview的divider的时候，发现没有效果。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br]]>
+    <![CDATA[<p>在程序里面设置listview的divider的时候，发现没有效果。<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setDivider</span><span class="params">(Drawable divider)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (divider != <span class="keyword">null</span>) &#123;</span><br><span class="line">        mDividerHeight = divider.getIntrinsicHeight();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mDividerHeight = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//....</span></span><br></pre></td></tr></table></figure></p>]]>
+    
     </summary>
     
       <category term="android" scheme="http://pleaseyouya.com/tags/android/"/>
@@ -350,8 +355,9 @@
     <link href="http://pleaseyouya.com/2016/01/16/listview%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/"/>
     <id>http://pleaseyouya.com/2016/01/16/listview常见使用场景/</id>
     <published>2016-01-16T09:59:49.000Z</published>
-    <updated>2016-01-16T13:27:49.000Z</updated>
+    <updated>2016-01-30T09:28:56.000Z</updated>
     <content type="html"><![CDATA[<p>场景1、滑动到底部或者顶部时，去掉底部或顶部产生的阴影。<br><figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//去掉滑动到底部时或者顶部时产生的阴影divider</span></span><br><span class="line">listView.setOverScrollMode<span class="comment">(View.OVER_SCROLL_NEVER)</span>;</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
 <p>场景2、让listview滑动到底部<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">listView.post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        listView.smoothScrollToPosition(listView.getCount()-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
 <p>还有另一种方式, listview.setSelection(listview.getCount()-1)，但是这种方式没有滑动的动画效果。</p>
 <p>场景3、让listview向下滑动一个item<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">listView.post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        listView.smoothScrollByOffset(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
@@ -362,7 +368,8 @@
 <p>这样onItemClick可以正常执行，并且button当点击时同样可以获取焦点。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>场景1、滑动到底部或者顶部时，去掉底部或顶部产生的阴影。<br><figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span c]]>
+    <![CDATA[<p>场景1、滑动到底部或者顶部时，去掉底部或顶部产生的阴影。<br><figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//去掉滑动到底部时或者顶部时产生的阴影divider</span></span><br><span class="line">listView.setOverScrollMode<span class="comment">(View.OVER_SCROLL_NEVER)</span>;</span><br></pre></td></tr></table></figure></p>]]>
+    
     </summary>
     
       <category term="android" scheme="http://pleaseyouya.com/tags/android/"/>
@@ -374,8 +381,8 @@
     <link href="http://pleaseyouya.com/2016/01/16/%E6%B5%85%E8%B0%88android-sharedpreferences-mode/"/>
     <id>http://pleaseyouya.com/2016/01/16/浅谈android-sharedpreferences-mode/</id>
     <published>2016-01-16T06:25:18.000Z</published>
-    <updated>2016-01-16T08:34:23.000Z</updated>
-    <content type="html"><![CDATA[<p>目标：实现两个进程间通信，通过sharedPreferences。</p>
+    <updated>2016-01-30T09:30:21.000Z</updated>
+    <content type="html"><![CDATA[<p>目标：实现两个进程间通信，通过sharedPreferences。<br><a id="more"></a></p>
 <ol>
 <li><h3 id="u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u5B58_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u4E2D_u5374_u53D6_u4E0D_u5230_u6570_u636E_uFF1F"><a href="#u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u5B58_u6570_u636E_uFF0C_u4F46_u662F_u5728_u8FDB_u7A0BB_u4E2D_u5374_u53D6_u4E0D_u5230_u6570_u636E_uFF1F" class="headerlink" title="问题：在进程A中存数据，但是在进程B中却取不到数据？"></a>问题：在进程A中存数据，但是在进程B中却取不到数据？</h3><p><em>发现问题</em>：进程A在getSharedPreferences的模式是<em>MODE_PRIVATE</em>，此时进程B肯定读不到。<br><em>正确的做法</em>：进程A在getSharedPreferences的模式是MODE_WORLD_READABLE</p>
 <figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">getSharedPreferences(<span class="string">"pref"</span>, <span class="type">Context</span>.<span class="type">MODE_WORLD_READABLE</span>).edit<span class="literal">()</span></span><br><span class="line">                        .putString</span><br><span class="line">                        (<span class="string">"key"</span>,</span><br><span class="line">                        <span class="string">"world readable"</span>).commit<span class="literal">()</span>;</span><br></pre></td></tr></table></figure>
@@ -389,9 +396,8 @@
 <p>性能比如下好：<br><figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sharedpreferences.edit<span class="literal">()</span>.putString(<span class="string">"key1"</span>, <span class="string">"data1"</span>).commit<span class="literal">()</span>;</span><br><span class="line">sharedpreferences.edit<span class="literal">()</span>.putString(<span class="string">"key2"</span>, <span class="string">"data2"</span>).commit<span class="literal">()</span>;</span><br></pre></td></tr></table></figure></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>目标：实现两个进程间通信，通过sharedPreferences。</p>
-<ol>
-<li><h3 id="u95EE_u9898_uFF1A_u5728_u8FDB_u7A0BA_u4E2D_u5B58_u6570_u636E_uFF0C_u4F46_u662F_u57]]>
+    <![CDATA[<p>目标：实现两个进程间通信，通过sharedPreferences。<br>]]>
+    
     </summary>
     
   </entry>
@@ -401,14 +407,15 @@
     <link href="http://pleaseyouya.com/2016/01/14/android-headerDividersEnabled%E5%92%8Candroid-footerDividersEnabled/"/>
     <id>http://pleaseyouya.com/2016/01/14/android-headerDividersEnabled和android-footerDividersEnabled/</id>
     <published>2016-01-13T16:21:47.000Z</published>
-    <updated>2016-01-13T16:32:46.000Z</updated>
-    <content type="html"><![CDATA[<p>在android中，listview可以添加header和footer。<br>不管是header还是footer，和listview的item之间默认都有divider。<br>如果添加header时不希望和第一个item有divider，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">android:headerDividersEnabled </span>= <span class="string">"false"</span></span><br></pre></td></tr></table></figure></p>
+    <updated>2016-01-30T09:28:23.000Z</updated>
+    <content type="html"><![CDATA[<p>在android中，listview可以添加header和footer。<br>不管是header还是footer，和listview的item之间默认都有divider。<br><a id="more"></a><br>如果添加header时不希望和第一个item有divider，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">android:headerDividersEnabled </span>= <span class="string">"false"</span></span><br></pre></td></tr></table></figure></p>
 <p>如果添加footer时不希望和最后一个item有divider，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">android:footerDividersEnabled </span>= <span class="string">"false"</span></span><br></pre></td></tr></table></figure></p>
 <p>listview的第一个item的上边和最后一个item的下边默认都没有divider，而item之间都默认有。<br>如果想去掉所有的divider，包括header和footer的，<br><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">android:</span>divider=<span class="string">"@null"</span></span><br></pre></td></tr></table></figure></p>
 <p>此时，headerDividersEnabled和footerDividersEnabled怎么设置都没效果了。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>在android中，listview可以添加header和footer。<br>不管是header还是footer，和listview的item之间默认都有divider。<br>如果添加header时不希望和第一个item有divider，<br><figure clas]]>
+    <![CDATA[<p>在android中，listview可以添加header和footer。<br>不管是header还是footer，和listview的item之间默认都有divider。<br>]]>
+    
     </summary>
     
       <category term="android" scheme="http://pleaseyouya.com/tags/android/"/>
@@ -420,8 +427,8 @@
     <link href="http://pleaseyouya.com/2016/01/12/%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E6%9C%AC%E5%9C%B0%E9%A1%B9%E7%9B%AE%E5%88%B0github/"/>
     <id>http://pleaseyouya.com/2016/01/12/添加一个本地项目到github/</id>
     <published>2016-01-12T15:49:36.000Z</published>
-    <updated>2016-01-12T16:58:09.000Z</updated>
-    <content type="html"><![CDATA[<p>如何把一个项目推送到github上面呢？可以让git的版本管理帮你完成这件事。<br>既然git要完成推送本地项目到github的任务，它需要管理本地的项目，同时需要知道推送到github上哪一个地方。</p>
+    <updated>2016-01-30T09:31:14.000Z</updated>
+    <content type="html"><![CDATA[<p>如何把一个项目推送到github上面呢？可以让git的版本管理帮你完成这件事。<br><a id="more"></a><br>既然git要完成推送本地项目到github的任务，它需要管理本地的项目，同时需要知道推送到github上哪一个地方。</p>
 <pre><code>1、git需要管理本地项目，即把该项目转化成一个git仓库。
 </code></pre><p>如何把一个项目转化成一个仓库呢？做法是，在项目本目录下，执行git init。</p>
 <figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">git</span> init</span><br></pre></td></tr></table></figure>
@@ -436,8 +443,8 @@
 </code></pre><p>最后，将本地的项目推送到github，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">git</span> <span class="keyword">push </span>-u origin master</span><br></pre></td></tr></table></figure></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>如何把一个项目推送到github上面呢？可以让git的版本管理帮你完成这件事。<br>既然git要完成推送本地项目到github的任务，它需要管理本地的项目，同时需要知道推送到github上哪一个地方。</p>
-<pre><code>1、git需要管理本地项目，即把该项目转]]>
+    <![CDATA[<p>如何把一个项目推送到github上面呢？可以让git的版本管理帮你完成这件事。<br>]]>
+    
     </summary>
     
       <category term="git" scheme="http://pleaseyouya.com/tags/git/"/>

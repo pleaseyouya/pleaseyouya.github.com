@@ -10,26 +10,18 @@
     <meta name="author" content="pleaseyouya">
   
   
-    <meta name="description" content="自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。
-1、设置文本相关属性设置文本抗锯齿和子像素抗锯齿，让文本更平滑1TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
-设置">
+    <meta name="description" content="自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。">
   
-  <meta name="description" content="自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。
-1、设置文本相关属性设置文本抗锯齿和子像素抗锯齿，让文本更平滑1TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
-设置">
+  <meta name="description" content="自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="自定义drawable(内容文字)">
 <meta property="og:url" content="http://pleaseyouya.com/2016/01/22/自定义drawable-内容文字/index.html">
 <meta property="og:site_name" content="Pleaseyouya's Blog">
-<meta property="og:description" content="自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。
-1、设置文本相关属性设置文本抗锯齿和子像素抗锯齿，让文本更平滑1TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
-设置">
-<meta property="og:updated_time" content="2016-01-22T15:01:28.000Z">
+<meta property="og:description" content="自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。">
+<meta property="og:updated_time" content="2016-01-30T09:31:24.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="自定义drawable(内容文字)">
-<meta name="twitter:description" content="自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。
-1、设置文本相关属性设置文本抗锯齿和子像素抗锯齿，让文本更平滑1TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
-设置">
+<meta name="twitter:description" content="自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。">
   
     <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
   
@@ -82,8 +74,7 @@
   
   <div class="entry">
     
-      <p>自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。</p>
-<p>1、设置文本相关属性<br>设置文本抗锯齿和子像素抗锯齿，让文本更平滑<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TextPaint textPaint = new TextPaint<span class="list">(<span class="keyword">Paint</span>.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+      <p>自定义一个drawable，内容是文字，可以设置文字内容，文字颜色，字体，字体大小，padding，字体样式(粗体，斜体，正常)、drawable圆角半径。<br><a id="more"></a><br>1、设置文本相关属性<br>设置文本抗锯齿和子像素抗锯齿，让文本更平滑<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TextPaint textPaint = new TextPaint<span class="list">(<span class="keyword">Paint</span>.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
 <p>设置字体，“sans-serif-black”，正常样式<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">textPaint</span><span class="class">.setTypeface</span>(<span class="tag">Typeface</span><span class="class">.create</span>("<span class="tag">sans-serif-black</span>", <span class="tag">Typeface</span><span class="class">.NORMAL</span>));</span><br></pre></td></tr></table></figure></p>
 <p>设置字体大小，单位为像素<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DisplayMetrics dm = context.getResources().getDisplayMetrics();</span><br><span class="line"><span class="keyword">float</span> scaledDensity = dm.scaledDensity;</span><br><span class="line">textPaint.setTextSize(<span class="number">12</span> * scaledDensity); <span class="comment">// 12dp</span></span><br></pre></td></tr></table></figure></p>
 <p>2、设置完属性后，获取文本宽高<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Rect textBounds = new Rect();</span><br><span class="line">textPaint.getTextBounds(<span class="type">text</span>, <span class="number">0</span>, <span class="type">text</span>.<span class="property">length</span>, textBounds);</span><br></pre></td></tr></table></figure></p>
