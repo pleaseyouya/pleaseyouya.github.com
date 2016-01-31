@@ -10,20 +10,20 @@
     <meta name="author" content="pleaseyouya">
   
   
-    <meta name="description" content="谈到PriorityBlockingQueue的添加元素和取元素时，都需要获取锁。这里的锁是ReentrantLock。ReentrantLock有公平锁和非公平锁两种版本。那么，PriorityBlockingQueue用的是哪种版本呢？12345678910public PriorityBlockingQueue(int initialCapacity,">
+    <meta name="description" content="谈到PriorityBlockingQueue的添加元素和取元素时，都需要获取锁。这里的锁是ReentrantLock。">
   
-  <meta name="description" content="谈到PriorityBlockingQueue的添加元素和取元素时，都需要获取锁。这里的锁是ReentrantLock。ReentrantLock有公平锁和非公平锁两种版本。那么，PriorityBlockingQueue用的是哪种版本呢？12345678910public PriorityBlockingQueue(int initialCapacity,">
+  <meta name="description" content="谈到PriorityBlockingQueue的添加元素和取元素时，都需要获取锁。这里的锁是ReentrantLock。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浅谈ReentrantLock:非公平锁版本">
 <meta property="og:url" content="http://pleaseyouya.com/2016/01/31/浅谈ReentrantLock-非公平锁版本/index.html">
 <meta property="og:site_name" content="Pleaseyouya's Blog">
-<meta property="og:description" content="谈到PriorityBlockingQueue的添加元素和取元素时，都需要获取锁。这里的锁是ReentrantLock。ReentrantLock有公平锁和非公平锁两种版本。那么，PriorityBlockingQueue用的是哪种版本呢？12345678910public PriorityBlockingQueue(int initialCapacity,">
+<meta property="og:description" content="谈到PriorityBlockingQueue的添加元素和取元素时，都需要获取锁。这里的锁是ReentrantLock。">
 <meta property="og:image" content="http://pleaseyouya.com/../../../../images/nonfair_lock.png">
 <meta property="og:image" content="http://pleaseyouya.com/../../../../images/nonfair_unlock.jpg">
-<meta property="og:updated_time" content="2016-01-31T15:28:36.000Z">
+<meta property="og:updated_time" content="2016-01-31T15:31:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈ReentrantLock:非公平锁版本">
-<meta name="twitter:description" content="谈到PriorityBlockingQueue的添加元素和取元素时，都需要获取锁。这里的锁是ReentrantLock。ReentrantLock有公平锁和非公平锁两种版本。那么，PriorityBlockingQueue用的是哪种版本呢？12345678910public PriorityBlockingQueue(int initialCapacity,">
+<meta name="twitter:description" content="谈到PriorityBlockingQueue的添加元素和取元素时，都需要获取锁。这里的锁是ReentrantLock。">
   
     <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
   
@@ -76,7 +76,9 @@
   
   <div class="entry">
     
-      <p>谈到PriorityBlockingQueue的添加元素和取元素时，都需要获取锁。这里的锁是ReentrantLock。<br>ReentrantLock有公平锁和非公平锁两种版本。那么，PriorityBlockingQueue用的是哪种版本呢？<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PriorityBlockingQueue</span><span class="params">(<span class="keyword">int</span> initialCapacity,</span><br><span class="line">                                 Comparator&lt;? <span class="keyword">super</span> E&gt; comparator)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">this</span>.lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ReentrantLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    sync = <span class="keyword">new</span> NonfairSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+      <p>谈到PriorityBlockingQueue的添加元素和取元素时，都需要获取锁。这里的锁是ReentrantLock。</p>
+<a id="more"></a>
+<p>ReentrantLock有公平锁和非公平锁两种版本。那么，PriorityBlockingQueue用的是哪种版本呢？<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PriorityBlockingQueue</span><span class="params">(<span class="keyword">int</span> initialCapacity,</span><br><span class="line">                                 Comparator&lt;? <span class="keyword">super</span> E&gt; comparator)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">this</span>.lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ReentrantLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    sync = <span class="keyword">new</span> NonfairSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>PriorityBlockingQueue使用ReentrantLock的默认构造函数，实例化lock。而ReentrantLock默认使用非公平锁。</p>
 <p>本文来讨论ReentrantLock的非公平锁版本。<br>ReentrantLock实际上是委托sync来实现lock和unlock等功能的。<br>那么,sync是什么呢？</p>
 <p>1、什么是Sync？<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">static <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">NonfairSync</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Sync</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line">static <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">FairSync</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Sync</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">abstract</span> static <span class="class"><span class="keyword">class</span> <span class="title">Sync</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AbstractQueuedSynchronizer</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
