@@ -10,31 +10,19 @@
     <meta name="author" content="pleaseyouya">
   
   
-    <meta name="description" content="上文讨论ReentrantLock的非公平锁版本，本文来说说公平锁版本。
-1、FairSync如何进行lock操作？下面为加锁的流程：
-和NonFairSync的流程图比较，有两个地方不同，(1)NonFairSync有两次try lock，而FairSync只有一次try lock。
-那么，有一个疑问，既然FairSync是公平锁，为什么一开始就可以try lock，而不是放进CLH队列呢？这就">
+    <meta name="description" content="上文讨论ReentrantLock的非公平锁版本，本文来说说公平锁版本。">
   
-  <meta name="description" content="上文讨论ReentrantLock的非公平锁版本，本文来说说公平锁版本。
-1、FairSync如何进行lock操作？下面为加锁的流程：
-和NonFairSync的流程图比较，有两个地方不同，(1)NonFairSync有两次try lock，而FairSync只有一次try lock。
-那么，有一个疑问，既然FairSync是公平锁，为什么一开始就可以try lock，而不是放进CLH队列呢？这就">
+  <meta name="description" content="上文讨论ReentrantLock的非公平锁版本，本文来说说公平锁版本。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浅谈ReentrantLock:公平锁版本">
 <meta property="og:url" content="http://pleaseyouya.com/2016/02/01/浅谈ReentrantLock-公平锁版本/index.html">
 <meta property="og:site_name" content="Pleaseyouya's Blog">
-<meta property="og:description" content="上文讨论ReentrantLock的非公平锁版本，本文来说说公平锁版本。
-1、FairSync如何进行lock操作？下面为加锁的流程：
-和NonFairSync的流程图比较，有两个地方不同，(1)NonFairSync有两次try lock，而FairSync只有一次try lock。
-那么，有一个疑问，既然FairSync是公平锁，为什么一开始就可以try lock，而不是放进CLH队列呢？这就">
+<meta property="og:description" content="上文讨论ReentrantLock的非公平锁版本，本文来说说公平锁版本。">
 <meta property="og:image" content="http://pleaseyouya.com/../../../../images/fair_lock.png">
-<meta property="og:updated_time" content="2016-01-31T17:08:54.000Z">
+<meta property="og:updated_time" content="2016-01-31T17:10:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈ReentrantLock:公平锁版本">
-<meta name="twitter:description" content="上文讨论ReentrantLock的非公平锁版本，本文来说说公平锁版本。
-1、FairSync如何进行lock操作？下面为加锁的流程：
-和NonFairSync的流程图比较，有两个地方不同，(1)NonFairSync有两次try lock，而FairSync只有一次try lock。
-那么，有一个疑问，既然FairSync是公平锁，为什么一开始就可以try lock，而不是放进CLH队列呢？这就">
+<meta name="twitter:description" content="上文讨论ReentrantLock的非公平锁版本，本文来说说公平锁版本。">
   
     <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
   
@@ -88,6 +76,7 @@
   <div class="entry">
     
       <p>上文讨论ReentrantLock的非公平锁版本，本文来说说公平锁版本。</p>
+<a id="more"></a>
 <p>1、FairSync如何进行lock操作？<br>下面为加锁的流程：<br><img src="../../../../images/fair_lock.png" alt="lock"></p>
 <p>和NonFairSync的流程图比较，有两个地方不同，<br>(1)NonFairSync有两次try lock，而FairSync只有一次try lock。</p>
 <p>那么，有一个疑问，既然FairSync是公平锁，为什么一开始就可以try lock，而不是放进CLH队列呢？<br>这就是和NonFairSync的第二个不同点了。<br>(2)NonFairSync和FairSync的try lock操作不一样。</p>

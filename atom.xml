@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-31T17:08:54.000Z</updated>
+  <updated>2016-01-31T17:10:50.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -19,8 +19,9 @@
     <link href="http://pleaseyouya.com/2016/02/01/%E6%B5%85%E8%B0%88ReentrantLock-%E5%85%AC%E5%B9%B3%E9%94%81%E7%89%88%E6%9C%AC/"/>
     <id>http://pleaseyouya.com/2016/02/01/浅谈ReentrantLock-公平锁版本/</id>
     <published>2016-01-31T16:36:20.000Z</published>
-    <updated>2016-01-31T17:08:54.000Z</updated>
+    <updated>2016-01-31T17:10:50.000Z</updated>
     <content type="html"><![CDATA[<p>上文讨论ReentrantLock的非公平锁版本，本文来说说公平锁版本。</p>
+<a id="more"></a>
 <p>1、FairSync如何进行lock操作？<br>下面为加锁的流程：<br><img src="../../../../images/fair_lock.png" alt="lock"></p>
 <p>和NonFairSync的流程图比较，有两个地方不同，<br>(1)NonFairSync有两次try lock，而FairSync只有一次try lock。</p>
 <p>那么，有一个疑问，既然FairSync是公平锁，为什么一开始就可以try lock，而不是放进CLH队列呢？<br>这就是和NonFairSync的第二个不同点了。<br>(2)NonFairSync和FairSync的try lock操作不一样。</p>
@@ -35,8 +36,8 @@
 <p>2、FairSync如何进行unlock？<br>FairSync和NonFairSync的unlock操作完全一样。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>上文讨论ReentrantLock的非公平锁版本，本文来说说公平锁版本。</p>
-<p>1、FairSync如何进行lock操作？<br>下面为加锁的流程：<br><img src="../../../../images/fair_lock.png" alt="lock">]]>
+    <![CDATA[<p>上文讨论ReentrantLock的非公平锁版本，本文来说说公平锁版本。</p>]]>
+    
     </summary>
     
       <category term="concurrent" scheme="http://pleaseyouya.com/tags/concurrent/"/>
