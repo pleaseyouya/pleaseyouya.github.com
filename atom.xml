@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-31T13:45:03.000Z</updated>
+  <updated>2016-01-31T13:48:10.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -19,14 +19,14 @@
     <link href="http://pleaseyouya.com/2016/01/31/%E6%B5%85%E8%B0%88ReentrantLock-%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E7%89%88%E6%9C%AC/"/>
     <id>http://pleaseyouya.com/2016/01/31/浅谈ReentrantLock-非公平锁版本/</id>
     <published>2016-01-31T09:17:44.000Z</published>
-    <updated>2016-01-31T13:45:03.000Z</updated>
+    <updated>2016-01-31T13:48:10.000Z</updated>
     <content type="html"><![CDATA[<p>谈到PriorityBlockingQueue的添加元素和取元素时，都需要获取锁。这里的锁是ReentrantLock。<br>ReentrantLock有公平锁和非公平锁两种版本。那么，PriorityBlockingQueue用的是哪种版本呢？<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PriorityBlockingQueue</span><span class="params">(<span class="keyword">int</span> initialCapacity,</span><br><span class="line">                                 Comparator&lt;? <span class="keyword">super</span> E&gt; comparator)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">this</span>.lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ReentrantLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    sync = <span class="keyword">new</span> NonfairSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>PriorityBlockingQueue使用ReentrantLock的默认构造函数，实例化lock。而ReentrantLock默认使用非公平锁。</p>
 <p>本文来讨论ReentrantLock的非公平锁版本。<br>ReentrantLock实际上是委托sync来实现lock和unlock等功能的。<br>那么,sync是什么呢？</p>
 <p>1、什么是Sync？<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">static <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">NonfairSync</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Sync</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line">static <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">FairSync</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Sync</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">abstract</span> static <span class="class"><span class="keyword">class</span> <span class="title">Sync</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AbstractQueuedSynchronizer</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>Sync有两个版本：NonfairSync和FairSync。ReentrantLock的版本(公平 or 非公平)实际上是由Sync决定的。<br>而Sync继承AbstractQueuedSynchronizer。</p>
 <p>2、NonfairSync如何进行lock操作？<br>加锁操作流程如下：</p>
-<p><img src="G:\hexo_program\source\images\nonfair_lock.jpg" alt="lock"></p>
+<p><img src="images\nonfair_lock.jpg" alt="lock"></p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>谈到PriorityBlockingQueue的添加元素和取元素时，都需要获取锁。这里的锁是ReentrantLock。<br>ReentrantLock有公平锁和非公平锁两种版本。那么，PriorityBlockingQueue用的是哪种版本呢？<br><figure c]]>
