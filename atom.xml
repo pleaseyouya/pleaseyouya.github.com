@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-31T07:51:12.000Z</updated>
+  <updated>2016-01-31T07:54:59.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -19,8 +19,9 @@
     <link href="http://pleaseyouya.com/2016/01/30/BlockingQueue%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0take%E5%8A%9F%E8%83%BD/"/>
     <id>http://pleaseyouya.com/2016/01/30/BlockingQueue怎么实现take功能/</id>
     <published>2016-01-30T14:38:14.000Z</published>
-    <updated>2016-01-31T07:51:12.000Z</updated>
+    <updated>2016-01-31T07:54:59.000Z</updated>
     <content type="html"><![CDATA[<p>本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。</p>
+<a id="more"></a>
 <p>take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。</p>
 <p>poll有两个版本：</p>
 <ol>
@@ -38,11 +39,8 @@
 <p>注意，这里的等待时间是，每次阻塞的时间总和，而不是每一次阻塞的时间。所以，本方法最多阻塞时间不会超过timeout。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。</p>
-<p>take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。</p>
-<p>poll有两个版本：</p>
-<ol>
-<li>poll()<b]]>
+    <![CDATA[<p>本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。</p>]]>
+    
     </summary>
     
       <category term="java" scheme="http://pleaseyouya.com/tags/java/"/>

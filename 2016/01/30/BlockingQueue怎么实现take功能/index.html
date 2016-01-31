@@ -10,38 +10,18 @@
     <meta name="author" content="pleaseyouya">
   
   
-    <meta name="description" content="本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。
-take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。
-poll有两个版本：
-
-poll()不会发生阻塞。从队列中取出第一个数据，如果队列为空，直接返回null。
-poll(long timeout, TimeUnit unit)可能发生阻塞，但阻塞时间最多不会超过time">
+    <meta name="description" content="本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。">
   
-  <meta name="description" content="本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。
-take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。
-poll有两个版本：
-
-poll()不会发生阻塞。从队列中取出第一个数据，如果队列为空，直接返回null。
-poll(long timeout, TimeUnit unit)可能发生阻塞，但阻塞时间最多不会超过time">
+  <meta name="description" content="本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="谈谈BlockingQueue的take, poll">
 <meta property="og:url" content="http://pleaseyouya.com/2016/01/30/BlockingQueue怎么实现take功能/index.html">
 <meta property="og:site_name" content="Pleaseyouya's Blog">
-<meta property="og:description" content="本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。
-take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。
-poll有两个版本：
-
-poll()不会发生阻塞。从队列中取出第一个数据，如果队列为空，直接返回null。
-poll(long timeout, TimeUnit unit)可能发生阻塞，但阻塞时间最多不会超过time">
-<meta property="og:updated_time" content="2016-01-31T07:51:12.000Z">
+<meta property="og:description" content="本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。">
+<meta property="og:updated_time" content="2016-01-31T07:54:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="谈谈BlockingQueue的take, poll">
-<meta name="twitter:description" content="本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。
-take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。
-poll有两个版本：
-
-poll()不会发生阻塞。从队列中取出第一个数据，如果队列为空，直接返回null。
-poll(long timeout, TimeUnit unit)可能发生阻塞，但阻塞时间最多不会超过time">
+<meta name="twitter:description" content="本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。">
   
     <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
   
@@ -95,6 +75,7 @@ poll(long timeout, TimeUnit unit)可能发生阻塞，但阻塞时间最多不�
   <div class="entry">
     
       <p>本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。</p>
+<a id="more"></a>
 <p>take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。</p>
 <p>poll有两个版本：</p>
 <ol>
