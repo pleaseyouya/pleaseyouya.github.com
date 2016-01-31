@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-01-30T17:21:24.000Z</updated>
+  <updated>2016-01-31T07:51:12.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -19,15 +19,23 @@
     <link href="http://pleaseyouya.com/2016/01/30/BlockingQueue%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0take%E5%8A%9F%E8%83%BD/"/>
     <id>http://pleaseyouya.com/2016/01/30/BlockingQueue怎么实现take功能/</id>
     <published>2016-01-30T14:38:14.000Z</published>
-    <updated>2016-01-30T17:21:24.000Z</updated>
+    <updated>2016-01-31T07:51:12.000Z</updated>
     <content type="html"><![CDATA[<p>本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。</p>
 <p>take：从队列中取出第一个数据，如果队列为空，线程将被阻塞。</p>
 <p>poll有两个版本：</p>
 <ol>
 <li>poll()<br>不会发生阻塞。从队列中取出第一个数据，如果队列为空，直接返回null。</li>
-<li>poll(long timeout, TimeUnit unit)<br>可能发生阻塞。从队列中取出第一个数据。如果队列为空，线程将被阻塞，如果在timeout之前被唤醒，则可以继续尝试。如果timeout，则返回null。</li>
+<li>poll(long timeout, TimeUnit unit)<br>可能发生阻塞，但阻塞时间最多不会超过timeout。从队列中取出第一个数据。如果队列为空，线程将被阻塞，如果在timeout之前被唤醒，则可以继续尝试。如果timeout，则返回null。</li>
 </ol>
-<p>先来说take()。<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public E take() throws <span class="type">InterruptedException</span> &#123;</span><br><span class="line">    final <span class="type">ReentrantLock</span> lock = this.lock;</span><br><span class="line">    lock.lockInterruptibly();</span><br><span class="line">    E <span class="literal">result</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> ( (<span class="literal">result</span> = dequeue()) == null)</span><br><span class="line">            notEmpty.await();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">result</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>先来说take()。<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public E take() throws <span class="type">InterruptedException</span> &#123;</span><br><span class="line">    lock.lockInterruptibly();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> ( (<span class="literal">result</span> = dequeue()) == null)</span><br><span class="line">            notEmpty.await();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">result</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先，获取主锁。获取主锁的过程中可以被中断。<br>从队列中取第一个元素，如果队列为空，则等待队列非空，此时线程阻塞。</p>
+<p>注意，notEmpty.await会先释放主锁，然后进入阻塞状态，直到队列非空。<br>当队列非空，退出阻塞状态时，会重新获取主锁。</p>
+<p>退出阻塞状态后，重新尝试从队列获取队首元素。<br>最后，释放主锁。</p>
+<p>poll()<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">poll</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">lock</span>.<span class="keyword">lock</span>();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> dequeue();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">lock</span>.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先，获取主锁。但是和take不一样的是，获取锁的过程中不会被中断。<br>然后，直接从队列取队首元素，如果元素为空，直接返回null。<br>最后，释放主锁。</p>
+<p>poll(long timeout, TimeUnit unit)<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public E poll(long timeout, <span class="type">TimeUnit</span> unit) throws <span class="type">InterruptedException</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    lock.lockInterruptibly();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> ( (<span class="literal">result</span> = dequeue()) == null &amp;&amp; nanos &gt; <span class="number">0</span>)</span><br><span class="line">            nanos = notEmpty.awaitNanos(nanos);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">result</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果取队首元素失败（队列为空），但是总的等待时间还没超过timeout，则进入阻塞状态，等待非空状态。<br>如果取队首元素失败（队列为空），但是总的等待时间已经超过timeout，则不再阻塞，直接返回null。</p>
+<p>注意，这里的等待时间是，每次阻塞的时间总和，而不是每一次阻塞的时间。所以，本方法最多阻塞时间不会超过timeout。</p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>本文来谈一下BlockingQueue的take，poll方法。以PriorityBlockingQueue为例子。</p>
