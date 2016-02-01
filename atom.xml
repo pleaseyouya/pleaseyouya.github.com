@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-02-01T14:51:59.000Z</updated>
+  <updated>2016-02-01T14:57:11.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -19,10 +19,10 @@
     <link href="http://pleaseyouya.com/2016/02/01/%E8%AE%B0Proguard%E8%BF%87%E7%A8%8B%E4%B8%AD%E8%B8%A9%E8%BF%87%E7%9A%84%E5%87%A0%E4%B8%AA%E5%9D%91/"/>
     <id>http://pleaseyouya.com/2016/02/01/记Proguard过程中踩过的几个坑/</id>
     <published>2016-02-01T14:37:53.000Z</published>
-    <updated>2016-02-01T14:51:59.000Z</updated>
+    <updated>2016-02-01T14:57:11.000Z</updated>
     <content type="html"><![CDATA[<p>今天在打release包，加混淆。打包过程中，报了几个错。</p>
 <p>1、Error:ProGuard: Can’t process class [com/example/msearchpublic/BuildConfig.class (Unsupported class version number [52.0] (maximum 51.0, Java 1.7)))</p>
-<p>看了下ProGuard的版本，<br><img src="../../../../images/version47.png" alt="version too low"></p>
+<p>看了下ProGuard的版本，<br><img src="../../../../images/version47.jpg" alt="version too low"></p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>今天在打release包，加混淆。打包过程中，报了几个错。</p>
