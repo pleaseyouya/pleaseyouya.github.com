@@ -1,0 +1,253 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>Ant debug过程分析 | Pleaseyouya&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="pleaseyouya">
+  
+  
+    <meta name="description" content="本文根据android sdk中的tools/ant/build.xml，对生成debug包的流程进行一次简单的描述。
+1、总体流程
+2、每个流程的任务-setup一些基本操作，
+
+输出项目名判断项目类型(library or test or other)
+
+-set-mode-check先判断是否已经设置了mode，因为接下来马上要设置mode为debug模式，如果之前已经设置了mode，则fa">
+  
+  <meta name="description" content="本文根据android sdk中的tools/ant/build.xml，对生成debug包的流程进行一次简单的描述。
+1、总体流程
+2、每个流程的任务-setup一些基本操作，
+
+输出项目名判断项目类型(library or test or other)
+
+-set-mode-check先判断是否已经设置了mode，因为接下来马上要设置mode为debug模式，如果之前已经设置了mode，则fa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ant debug过程分析">
+<meta property="og:url" content="http://pleaseyouya.com/2016/02/03/Ant-debug过程分析/index.html">
+<meta property="og:site_name" content="Pleaseyouya's Blog">
+<meta property="og:description" content="本文根据android sdk中的tools/ant/build.xml，对生成debug包的流程进行一次简单的描述。
+1、总体流程
+2、每个流程的任务-setup一些基本操作，
+
+输出项目名判断项目类型(library or test or other)
+
+-set-mode-check先判断是否已经设置了mode，因为接下来马上要设置mode为debug模式，如果之前已经设置了mode，则fa">
+<meta property="og:image" content="http://pleaseyouya.com/C:\Users\wangjinfa\Desktop\antdebug.png">
+<meta property="og:updated_time" content="2016-02-03T15:53:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ant debug过程分析">
+<meta name="twitter:description" content="本文根据android sdk中的tools/ant/build.xml，对生成debug包的流程进行一次简单的描述。
+1、总体流程
+2、每个流程的任务-setup一些基本操作，
+
+输出项目名判断项目类型(library or test or other)
+
+-set-mode-check先判断是否已经设置了mode，因为接下来马上要设置mode为debug模式，如果之前已经设置了mode，则fa">
+  
+    <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/favicon" href="/images/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">Pleaseyouya&#39;s Blog</a></h1>
+    <p><a href="/">Step by step</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/02/03/Ant-debug过程分析/">
+  <time datetime="2016-02-03T15:51:47.000Z">
+    2016-02-03
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">Ant debug过程分析</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>本文根据android sdk中的tools/ant/build.xml，对生成debug包的流程进行一次简单的描述。</p>
+<p>1、总体流程<br><img src="C:\Users\wangjinfa\Desktop\antdebug.png" alt="overall flow of debug build"></p>
+<p>2、每个流程的任务<br><strong>-setup</strong><br>一些基本操作，</p>
+<blockquote>
+<p>输出项目名<br>判断项目类型(library or test or other)</p>
+</blockquote>
+<p><strong>-set-mode-check</strong><br>先判断是否已经设置了mode，因为接下来马上要设置mode为debug模式，如果之前已经设置了mode，则fail。</p>
+<p><strong>-set-debug-files</strong><br>如果判断之前没有设置mode，则执行这一步</p>
+<blockquote>
+<p>设置debug-unaligned.apk的路径(一般在out文件夹下)<br>设置debug.apk的路径(一般在out文件夹下)</p>
+</blockquote>
+<p><strong>-set-debug-mode</strong><br>设置为debug模式</p>
+<blockquote>
+<p>build.target = debug<br>设置build.is.instrumented<br>设置build.is.packaging.debug<br>设置renderscript.opt.level优化</p>
+</blockquote>
+<p><strong>-debug-obfuscation-check</strong><br>在debug模式下不做混淆，将混淆关闭</p>
+<blockquote>
+<p>proguard.enabled=false</p>
+</blockquote>
+<p><strong>-build-setup</strong></p>
+<blockquote>
+<p>设置android.build.tools.dir路径</p>
+<p>从bin/build.prop文件中读取最近一次build的相关属性，将build.last.target，build.last.is.instrumented，build.last.is.packaging.debug，build.last.is.signing.debug置空</p>
+<p>如果最近一次不是debug模式，则将之前编译好的class文件删除, 路径在bin/class文件夹下。因为在新的模式下javac在计算依赖时无法使用以前不同模式编译的class文件。</p>
+<p>如果build.last.is.instrumented为true(现在是false)，一样要删除以前编译好的class文件。</p>
+<p>否则，编译好的class文件可以保留。</p>
+<p>gettarget获取相关target属性,<br>    jarFile是sdk/platforms/android-19/android.jar<br>    aidlFile是sdk/platforms/android-19/framework.aidl<br>    targetApiOut从manifest.xml的targetSdkVersion获取<br>    minSdkVersionOut从manifest.xml的minSdkVersion获取</p>
+<p>获取manifest中，application的hasCode是否true(默认true),false的情况下，不加载任何代码。</p>
+<p>创建工程相关目录(已经创建则跳过)，包括<br>    res文件夹<br>    libs文件夹<br>    bin文件夹<br>    bin/res文件夹<br>    bin/rsObj文件夹<br>    bin/rsLibs文件夹<br>    如果hasCode=true，再生成<br>    gen文件夹<br>    bin/classes文件夹<br>    bin/dexedLibs文件夹</p>
+<p>如果有库文件，编译库文件</p>
+<p>如果是一个test project，直接编译</p>
+</blockquote>
+<p><strong>-pre-build</strong><br>一般在项目中override。</p>
+<p><strong>-code-gen</strong></p>
+<blockquote>
+<p>将多个模块的manifest合成一个。</p>
+<p>如果hasCode=true，编译资源，aidl等：<br>编译aidl，输出到bin/aidl文件夹下<br>用renderscript编译resources，生成结果放在gen和bin/res, bin/rsLibs, bin/rsObj文件夹<br>用aapt对资源进行混淆(如果需要混淆)和打包</p>
+<p>处理BuildConfig类。</p>
+</blockquote>
+<p><strong>-pre-compile</strong><br>一般在项目中override。</p>
+<p><strong>-compile</strong></p>
+<blockquote>
+<p>如果hasCode=false，则跳过这一步。<br>否则，先合并project, test project, java compiler的classpath<br>调用javac，将src和gen的内容编译输出到bin<br>如果是instrument项目，调用emma并输出到bin/classes文件夹<br>如果是一个library项目，生成bin/classes.jar</p>
+</blockquote>
+<p><strong>-post-compile</strong><br>一般在项目中override。</p>
+<p><strong>-obfuscate</strong><br>debug过程不进行混淆。</p>
+<p><strong>-dex</strong><br>将class文件转化为dex文件(dalvik bytecode)。</p>
+<blockquote>
+<p>只有在hasCode=true，且不是library project时，才会执行dex。</p>
+</blockquote>
+<p><strong>-crunch</strong><br>更新png图片缓存，输出到bin/res文件夹下。</p>
+<p><strong>-package-resources</strong><br>对资源进行打包，包括res和assets文件夹下的东西。<br>可以选择对资源进行压缩处理或者不压缩。</p>
+<p><strong>-package</strong><br>只有在项目不是library project时，才会执行打包操作。<br>打包生成projectname-debug-unaligned.apk</p>
+<p><strong>-post-package</strong><br>一般在项目中override。</p>
+<p><strong>-do-debug</strong><br>根据projectname-debug-unaligned.apk，做对齐，生成最终的debug包：projectname-debug.apk</p>
+<p><strong>-post-build</strong><br>一般在项目中override。</p>
+
+    
+  </div>
+  <footer>
+    
+      
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/android/">android</a>, <a class="tags-link" href="/tags/ant/">ant</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">评论</h1>
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">pleaseyouya</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+  var disqus_shortname = 'pleaseyouya';
+
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  }());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
