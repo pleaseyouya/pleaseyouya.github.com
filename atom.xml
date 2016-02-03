@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-02-03T15:56:29.000Z</updated>
+  <updated>2016-02-03T15:58:36.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -19,8 +19,9 @@
     <link href="http://pleaseyouya.com/2016/02/03/Ant-debug%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90/"/>
     <id>http://pleaseyouya.com/2016/02/03/Ant-debug过程分析/</id>
     <published>2016-02-03T15:51:47.000Z</published>
-    <updated>2016-02-03T15:56:29.000Z</updated>
+    <updated>2016-02-03T15:58:36.000Z</updated>
     <content type="html"><![CDATA[<p>本文根据android sdk中的tools/ant/build.xml，对生成debug包的流程进行一次简单的描述。</p>
+<a id="more"></a>
 <p>1、总体流程<br><img src="../../../../images/ant_debug.png" alt="overall flow of debug build"></p>
 <p>2、每个流程的任务<br><strong>-setup</strong><br>一些基本操作，</p>
 <blockquote>
@@ -78,8 +79,8 @@
 <p><strong>-post-build</strong><br>一般在项目中override。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>本文根据android sdk中的tools/ant/build.xml，对生成debug包的流程进行一次简单的描述。</p>
-<p>1、总体流程<br><img src="../../../../images/ant_debug.png" alt="overall flo]]>
+    <![CDATA[<p>本文根据android sdk中的tools/ant/build.xml，对生成debug包的流程进行一次简单的描述。</p>]]>
+    
     </summary>
     
       <category term="android" scheme="http://pleaseyouya.com/tags/android/"/>
