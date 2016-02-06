@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-02-06T15:53:11.000Z</updated>
+  <updated>2016-02-06T15:53:56.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://pleaseyouya.com/2016/02/06/Remove-Duplicates-from-Sorted-Array/"/>
     <id>http://pleaseyouya.com/2016/02/06/Remove-Duplicates-from-Sorted-Array/</id>
     <published>2016-02-06T15:39:18.000Z</published>
-    <updated>2016-02-06T15:53:11.000Z</updated>
+    <updated>2016-02-06T15:53:56.000Z</updated>
     <content type="html"><![CDATA[<p>题目：从一个有序数组中删掉重复的数字。</p>
 <p>例子：<br>input: [1,1,2]<br>output:[1,2]</p>
 <p>一开始, input的指针指向第一个数。output为空。</p>
