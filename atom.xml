@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Step by step]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pleaseyouya.com/"/>
-  <updated>2016-02-06T15:20:37.000Z</updated>
+  <updated>2016-02-06T15:50:51.000Z</updated>
   <id>http://pleaseyouya.com/</id>
   
   <author>
@@ -13,6 +13,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Remove Duplicates from Sorted Array]]></title>
+    <link href="http://pleaseyouya.com/2016/02/06/Remove-Duplicates-from-Sorted-Array/"/>
+    <id>http://pleaseyouya.com/2016/02/06/Remove-Duplicates-from-Sorted-Array/</id>
+    <published>2016-02-06T15:39:18.000Z</published>
+    <updated>2016-02-06T15:50:51.000Z</updated>
+    <content type="html"><![CDATA[<p>题目：从一个有序数组中删掉重复的数字。</p>
+<p>例子：<br>input: [1,1,2]<br>output:[1,2]</p>
+<p>一开始, input的指针指向第一个数。output为空。</p>
+<p>因为第一个数一定不会被删。所以, output的指针指向1，然后input完成第一个数，指向第二个数。</p>
+<p>因为input当前指向的数是1，output指向的数也是1，所以input当前指向的数要被删掉。<br>所以，input指针指向数字2，output指针仍然指向1。</p>
+<p>此时，input指针指向的2不等于output指针指向的1，所以，ouput增加2，指针指向2。</p>
+<p>所以，假设input指针是input_ptr，output的指针是output_ptr，<br>如果input_ptr指向的数等于ouput_ptr指向的数，则删掉input_ptr指向的数，input_ptr++，output_ptr不变。<br>否则，input_ptr指向的数添加到output，并且output_ptr更新到最新的数。<br>```<br>int deleteDuplicate(int a[], int n) {<br>    int input_ptr = 1, output_ptr = 0;<br>    for (; input_ptr &lt; n; ++input_ptr) {<br>        if (a[input_ptr] != a[output_ptr]) {<br>            a[++output_ptr] = a[input_ptr];<br>        }<br>    }<br>    return output_ptr + 1;<br>}</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>题目：从一个有序数组中删掉重复的数字。</p>
+<p>例子：<br>input: [1,1,2]<br>output:[1,2]</p>
+<p>一开始, input的指针指向第一个数。output为空。</p>
+<p>因为第一个数一定不会被删。所以, output的指针指向]]>
+    </summary>
+    
+      <category term="algorithm" scheme="http://pleaseyouya.com/tags/algorithm/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[安装Kaldi]]></title>
@@ -654,26 +679,6 @@
     <![CDATA[<p>目标：实现两个进程间通信，通过sharedPreferences。</p>]]>
     
     </summary>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[浅谈listview的divider]]></title>
-    <link href="http://pleaseyouya.com/2016/01/14/android-headerDividersEnabled%E5%92%8Candroid-footerDividersEnabled/"/>
-    <id>http://pleaseyouya.com/2016/01/14/android-headerDividersEnabled和android-footerDividersEnabled/</id>
-    <published>2016-01-13T16:21:47.000Z</published>
-    <updated>2016-01-30T09:28:23.000Z</updated>
-    <content type="html"><![CDATA[<p>在android中，listview可以添加header和footer。<br>不管是header还是footer，和listview的item之间默认都有divider。<br><a id="more"></a><br>如果添加header时不希望和第一个item有divider，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">android:headerDividersEnabled </span>= <span class="string">"false"</span></span><br></pre></td></tr></table></figure></p>
-<p>如果添加footer时不希望和最后一个item有divider，<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">android:footerDividersEnabled </span>= <span class="string">"false"</span></span><br></pre></td></tr></table></figure></p>
-<p>listview的第一个item的上边和最后一个item的下边默认都没有divider，而item之间都默认有。<br>如果想去掉所有的divider，包括header和footer的，<br><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">android:</span>divider=<span class="string">"@null"</span></span><br></pre></td></tr></table></figure></p>
-<p>此时，headerDividersEnabled和footerDividersEnabled怎么设置都没效果了。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>在android中，listview可以添加header和footer。<br>不管是header还是footer，和listview的item之间默认都有divider。<br>]]>
-    
-    </summary>
-    
-      <category term="android" scheme="http://pleaseyouya.com/tags/android/"/>
     
   </entry>
   
