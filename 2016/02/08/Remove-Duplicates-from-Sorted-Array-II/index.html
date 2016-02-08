@@ -10,22 +10,18 @@
     <meta name="author" content="pleaseyouya">
   
   
-    <meta name="description" content="从排序数组中删除重复的数，每个数最多只能重复2次。比如input=[1,1,1,2,2,3], output=[1,1,2,2,3]
-因为input[0]肯定不删，所以output[0]=1.因为input[1]肯定不删，所以output[1]=1.因为input[2]=1，output[1]的前一个元素output[0]=1，所以input[2]被删掉。因为input[3]=2, output[">
+    <meta name="description" content="从排序数组中删除重复的数，每个数最多只能重复2次。比如input=[1,1,1,2,2,3], output=[1,1,2,2,3]">
   
-  <meta name="description" content="从排序数组中删除重复的数，每个数最多只能重复2次。比如input=[1,1,1,2,2,3], output=[1,1,2,2,3]
-因为input[0]肯定不删，所以output[0]=1.因为input[1]肯定不删，所以output[1]=1.因为input[2]=1，output[1]的前一个元素output[0]=1，所以input[2]被删掉。因为input[3]=2, output[">
+  <meta name="description" content="从排序数组中删除重复的数，每个数最多只能重复2次。比如input=[1,1,1,2,2,3], output=[1,1,2,2,3]">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Remove Duplicates from Sorted Array II">
 <meta property="og:url" content="http://pleaseyouya.com/2016/02/08/Remove-Duplicates-from-Sorted-Array-II/index.html">
 <meta property="og:site_name" content="Pleaseyouya's Blog">
-<meta property="og:description" content="从排序数组中删除重复的数，每个数最多只能重复2次。比如input=[1,1,1,2,2,3], output=[1,1,2,2,3]
-因为input[0]肯定不删，所以output[0]=1.因为input[1]肯定不删，所以output[1]=1.因为input[2]=1，output[1]的前一个元素output[0]=1，所以input[2]被删掉。因为input[3]=2, output[">
-<meta property="og:updated_time" content="2016-02-08T15:23:25.000Z">
+<meta property="og:description" content="从排序数组中删除重复的数，每个数最多只能重复2次。比如input=[1,1,1,2,2,3], output=[1,1,2,2,3]">
+<meta property="og:updated_time" content="2016-02-08T15:25:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Remove Duplicates from Sorted Array II">
-<meta name="twitter:description" content="从排序数组中删除重复的数，每个数最多只能重复2次。比如input=[1,1,1,2,2,3], output=[1,1,2,2,3]
-因为input[0]肯定不删，所以output[0]=1.因为input[1]肯定不删，所以output[1]=1.因为input[2]=1，output[1]的前一个元素output[0]=1，所以input[2]被删掉。因为input[3]=2, output[">
+<meta name="twitter:description" content="从排序数组中删除重复的数，每个数最多只能重复2次。比如input=[1,1,1,2,2,3], output=[1,1,2,2,3]">
   
     <link rel="alternate" href="/atom.xml" title="Pleaseyouya&#39;s Blog" type="application/atom+xml">
   
@@ -79,6 +75,7 @@
   <div class="entry">
     
       <p>从排序数组中删除重复的数，每个数最多只能重复2次。<br>比如input=[1,1,1,2,2,3], output=[1,1,2,2,3]</p>
+<a id="more"></a>
 <p>因为input[0]肯定不删，所以output[0]=1.<br>因为input[1]肯定不删，所以output[1]=1.<br>因为input[2]=1，output[1]的前一个元素output[0]=1，所以input[2]被删掉。<br>因为input[3]=2, output[1]的前一个元素output[0]=1，所以output[2]=2.<br>因为input[4]=2, output[2]的前一个元素output[1]=1，所以output[3]=2.<br>因为input[5]=3, output[3]的前一个元素output[2]=2，所以output[4]=3.</p>
 <p>代码如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">deleteDuplicates</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n  &lt; <span class="number">2</span>) <span class="keyword">return</span> n;</span><br><span class="line">    <span class="keyword">int</span> in_index = <span class="number">2</span>, out_index = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (; in_index &lt; n; ++in_index) &#123;</span><br><span class="line">        <span class="keyword">if</span> (a[in_index] != a[out_index - <span class="number">1</span>]) &#123;</span><br><span class="line">            a[++out_index] = a[in_index];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> out_index + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
